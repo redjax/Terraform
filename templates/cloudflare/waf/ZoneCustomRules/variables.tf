@@ -20,3 +20,8 @@ variable "cloudflare_zone_id" {
   description = "Cloudflare Zone ID"
   type        = string
 }
+
+variable "waf_ruleset_expression" {
+  description = "Expression(s) for rules to apply to WAF."
+  type        = string
+}
