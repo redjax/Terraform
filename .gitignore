@@ -3,4 +3,5 @@
 *.tfstate*
 .terraform/
 
+!terraform.tfvars
 !*example*

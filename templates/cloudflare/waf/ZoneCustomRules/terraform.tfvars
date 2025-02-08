@@ -1,13 +1,3 @@
-cloudflare_email     = ""
-cloudflare_api_key   = ""
-cloudflare_api_token = ""
-cloudflare_zone_ids  = [""]
-
-## Cloudflare rulesets to apply
-#  These are examples, although some/all are valid rules.
-#  Modify the examples below based on your needs, or create
-#  a custom rule in Cloudflare and copy the expression at the
-#  bottom of the rule creation page.
 waf_ruleset_expression = <<-EOF
 (http.request.uri.path contains "/wp-admin")
 or (ip.src eq 157.66.55.118)
@@ -18,6 +8,13 @@ or (ip.src eq 52.138.140.234)
 or (ip.src eq 13.79.228.175)
 or (ip.src eq 52.178.197.66)
 or (ip.src eq 13.94.100.142)
+or (ip.src.asnum eq 206092)
+or (ip.src.asnum eq 211298)
+or (ip.src.asnum eq 14061)
+or (ip.src.asnum eq 398324)
+or (ip.src.asnum eq 48090)
+or (ip.src.asnum eq 396982)
+or (ip.src.asnum eq 16509)
 or (cf.threat_score ge 29)
 or (cf.client.bot)
 or (cf.waf.credential_check.password_leaked)
@@ -58,4 +55,5 @@ or (ip.geoip.country eq "ID")
 or (ip.geoip.country eq "CH")
 or (ip.geoip.country eq "SE")
 or (ip.geoip.country eq "NL")
+or (ip.geoip.country eq "TR")
 EOF
