@@ -16,12 +16,12 @@ variable "cloudflare_api_token" {
   sensitive   = true
 }
 
-variable "cloudflare_zone_id" {
-  description = "Cloudflare Zone ID"
-  type        = string
+variable "cloudflare_zone_ids" {
+  description = "List of Cloudflare zone IDs to apply WAF rules to"
+  type        = list(string)
 }
 
 variable "waf_ruleset_expression" {
-  description = "Expression(s) for rules to apply to WAF."
+  description = "Expression(s) for rules to apply to WAF"
   type        = string
 }

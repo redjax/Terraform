@@ -14,9 +14,10 @@ provider "cloudflare" {
 }
 
 resource "cloudflare_ruleset" "waf_custom_rules" {
-  zone_id     = var.cloudflare_zone_id
-  name        = "Custom WAF Rules"
-  description = "Custom WAF rules for my site"
+  for_each    = toset(var.cloudflare_zone_ids)
+  zone_id     = each.value
+  name        = "Standard WAF Rules for ${each.value}"
+  description = "Standard WAF rulees for ${each.value}"
   kind        = "zone"
   phase       = "http_request_firewall_custom"
 
@@ -28,4 +29,8 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
       enabled     = true
     }
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
