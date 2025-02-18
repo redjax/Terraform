@@ -24,9 +24,24 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
   rules = [
     {
       action      = "block"
-      expression  = var.waf_ruleset_expression
+      expression  = var.waf_block_ruleset_expression
       description = "My Standard Block Rules"
       enabled     = true
+    },
+    {
+      action = "block"
+      expression = var.waf_block_ips_ruleset_expression
+      description = "BLOCK IP badness"
+      enabled = true
+    },
+    {
+      action      = "skip"
+      expression  = var.waf_allow_ruleset_expression
+      description = "My Standard Allow Rules"
+      enabled     = true
+      action_parameters = {
+        ruleset = "current"
+      }
     }
   ]
 
