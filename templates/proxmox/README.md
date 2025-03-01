@@ -57,3 +57,12 @@ Templates for terraforming a Proxmox host.
     - You can set whatever value you want for `Token ID`, i.e. `iac-token` or `terraform`
     - It is recommended to set a token expiration and to leave `Privilege Separation` checked, but you can set the token to never expire and uncheck the `Privilege Separation` box for local development/testing (not recommended).
   - Save your secret somewhere, you cannot view it again once you finish adding the token!
+
+## Links
+
+- [Terraform Proxmox provider](https://registry.terraform.io/providers/Telmate/proxmox/latest/docs)
+  - [Terraform Provider - Proxmox LXC resource](https://registry.terraform.io/providers/Telmate/proxmox/latest/docs/resources/lxc)
+- [Using Terraform or OpenTofu to create LXC containers on Proxmox](https://j.hommet.net/use-terraform-to-create-pve-lxc/)
+- [Clone Proxmox LXC containers with Terraform automation](https://www.virtualizationhowto.com/2025/01/clone-proxmox-lxc-containers-with-terraform-automation/)
+- [How to deploy VMs in Proxmox with Terraform](https://austinsnerdythings.com/2021/09/01/how-to-deploy-vms-in-proxmox-with-terraform/)
+- [Automating Proxmox LXC containers with Terraform: a step-by-step guide](https://medium.com/@work.giteshpradhan/automating-proxmox-lxc-containers-with-terraform-a-step-by-step-guide-62a5e1c650b3)
