@@ -55,13 +55,15 @@ Templates for terraforming a Proxmox host.
   - Create a new API token
     - Select the API user you created in the `User` dropdown
     - You can set whatever value you want for `Token ID`, i.e. `iac-token` or `terraform`
-    - It is recommended to set a token expiration and to leave `Privilege Separation` checked, but you can set the token to never expire and uncheck the `Privilege Separation` box for local development/testing (not recommended).
+    - It is recommended to set a token expiration, but you can set the token to never expire local development/testing (not recommended).
   - Save your secret somewhere, you cannot view it again once you finish adding the token!
+  - Note: I also had to uncheck the `Privilege Separation` box. This may be insecure, I will research and update this step if this is not an optimal setup.
 
 ## Links
 
-- [Terraform Proxmox provider](https://registry.terraform.io/providers/Telmate/proxmox/latest/docs)
+- [Terraform Proxmox provider (telmate)](https://registry.terraform.io/providers/Telmate/proxmox/latest/docs)
   - [Terraform Provider - Proxmox LXC resource](https://registry.terraform.io/providers/Telmate/proxmox/latest/docs/resources/lxc)
+- [Terraform Proxmox provider (bpg)](https://registry.terraform.io/providers/bpg/proxmox/latest/docs)
 - [Using Terraform or OpenTofu to create LXC containers on Proxmox](https://j.hommet.net/use-terraform-to-create-pve-lxc/)
 - [Clone Proxmox LXC containers with Terraform automation](https://www.virtualizationhowto.com/2025/01/clone-proxmox-lxc-containers-with-terraform-automation/)
 - [How to deploy VMs in Proxmox with Terraform](https://austinsnerdythings.com/2021/09/01/how-to-deploy-vms-in-proxmox-with-terraform/)
