@@ -1,0 +1,5 @@
+proxmox_token_id     = ""
+proxmox_token_secret = ""
+lxc_root_password    = ""
+proxmox_host         = ""
+proxmox_port         = ""
