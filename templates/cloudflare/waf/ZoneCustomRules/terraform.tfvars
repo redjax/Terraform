@@ -2,19 +2,19 @@ waf_block_ruleset_expression = <<-EOF
 (http.user_agent wildcard r"Expanse*")
 or (http.user_agent wildcard r"*SemrushBot*")
 or (http.user_agent wildcard r"*Expanse*Palo Alto*")
-
 or (cf.threat_score ge 29)
 or (cf.client.bot)
 or (cf.waf.credential_check.password_leaked)
 or (cf.api_gateway.fallthrough_detected)
-
 or (cf.verified_bot_category eq "Search Engine Crawler")
 or (cf.verified_bot_category eq "AI Crawler")
 or (cf.verified_bot_category eq "Aggregator")
 or (cf.verified_bot_category eq "Monitoring & Analytics")
 or (cf.verified_bot_category eq "Archiver")
+EOF
 
-or (ip.geoip.country eq "AR")
+waf_country_block_ruleset_expression = <<-EOF
+(ip.geoip.country eq "AR")
 or (ip.geoip.country eq "AU")
 or (ip.geoip.country eq "AT")
 or (ip.geoip.country eq "BG")
@@ -44,7 +44,6 @@ or (ip.geoip.country eq "UA")
 or (ip.geoip.country eq "VN")
 or (ip.geoip.country eq "HK")
 or (ip.geoip.country eq "CN")
-
 or (ip.src.country eq "AR")
 or (ip.src.country eq "AU")
 or (ip.src.country eq "AT")
@@ -77,6 +76,7 @@ EOF
 
 waf_block_ips_ruleset_expression = <<-EOF
 (ip.src eq 157.66.55.118)
+or (ip.src eq 185.248.85.12)
 or (ip.src eq 52.169.15.235)
 or (ip.src eq 138.199.18.61)
 or (ip.src eq 146.70.160.236)
@@ -111,8 +111,14 @@ or (ip.src eq 140.228.21.193)
 or (ip.src eq 2.56.20.62)
 or (ip.src eq 119.42.149.242)
 or (ip.src eq 98.159.39.138)
-
+or (ip.src eq 185.191.171.6)
+or (ip.src eq 185.191.171.4)
+or (ip.src eq 54.81.110.234)
+or (ip.src eq 162.142.125.217)
+or (ip.src eq 35.222.91.153)
+or (ip.src.asnum eq 32934)
 or (ip.src.asnum eq 10557)
+or (ip.src.asnum eq 43357)
 or (ip.src.asnum eq 51167)
 or (ip.src.asnum eq 60068)
 or (ip.src.asnum eq 206092)
@@ -124,7 +130,6 @@ or (ip.src.asnum eq 396982)
 or (ip.src.asnum eq 16509)
 or (ip.src.asnum eq 23959)
 or (ip.src.asnum eq 14061)
-or (ip.src.asnum eq 398324)
 or (ip.src.asnum eq 16276)
 or (ip.src.asnum eq 14956)
 or (ip.src.asnum eq 31898)
@@ -148,6 +153,7 @@ or (ip.src.asnum eq 45753)
 or (ip.src.asnum eq 46957)
 or (ip.src.asnum eq 47764)
 or (ip.src.asnum eq 137409)
+or (ip.src.asnum eq 209366)
 EOF
 
 waf_allow_ruleset_expression = <<-EOF

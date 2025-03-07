@@ -28,10 +28,15 @@ variable "waf_block_ruleset_expression" {
 
 variable "waf_block_ips_ruleset_expression" {
   description = "Expression(s) for BLOCK IP addresses/ANUMs to apply to WAF"
-  type = string
+  type        = string
 }
 
 variable "waf_allow_ruleset_expression" {
   description = "Expression(s) for ALLOW rules to apply to WAF"
-  type = string
+  type        = string
+}
+
+variable "waf_country_block_ruleset_expression" {
+  description = "Expression(s) for BLOCK countries to apply to WAF"
+  type        = string
 }
