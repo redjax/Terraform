@@ -1,3 +1,19 @@
+<#
+    .SYNOPSIS
+        Apply Cloudflare WAF ruleset.
+    
+    .DESCRIPTION
+        Call from the root of the repository to apply the Cloudflare WAF ruleset.
+
+    .PARAMETER AutoApprove
+        Answer 'yes' to prompts.
+
+    .PARAMETER SecretsFile
+        Relative path to a secrets.tfvars file.
+    
+    .EXAMPLE
+        .\scripts\terraform\apply_cf_waf_rules.ps1 -SecretsFile "secrets.dev.tfvars" -AutoApprove
+#>
 Param(
     [Parameter(Mandatory = $false, HelpMessage = "Answer 'yes' to prompts")]
     [switch]$AutoApprove = $false,
