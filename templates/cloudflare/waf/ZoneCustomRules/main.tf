@@ -29,10 +29,16 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
       enabled     = true
     },
     {
-      action = "block"
-      expression = var.waf_block_ips_ruleset_expression
-      description = "BLOCK IP badness"
-      enabled = true
+      action      = "block"
+      expression  = var.waf_block_ips_ruleset_expression
+      description = "BLOCK IP Badness"
+      enabled     = true
+    },
+    {
+      action      = "block"
+      expression  = var.waf_country_block_ruleset_expression
+      description = "Country blocking Rules"
+      enabled     = true
     },
     {
       action      = "skip"
