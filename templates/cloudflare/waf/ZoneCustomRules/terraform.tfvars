@@ -182,6 +182,7 @@ or (ip.src.asnum eq 137409)
 or (ip.src.asnum eq 209366)
 EOF
 
-waf_allow_ruleset_expression = <<-EOF
-(ip.src eq 157.66.55.118)
-EOF
+## Copy the lines below into your 'secrets.tfvars' file
+# waf_allow_ruleset_expression = <<-EOF
+# (ip.src eq xxx.xxx.xxx.xxx)
+# EOF
