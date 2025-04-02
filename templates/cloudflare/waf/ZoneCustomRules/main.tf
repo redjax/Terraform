@@ -23,6 +23,15 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
 
   rules = [
     {
+      action      = "skip"
+      expression  = var.waf_allow_ruleset_expression
+      description = "My Standard Allow Rules"
+      enabled     = true
+      action_parameters = {
+        ruleset = "current"
+      }
+    },
+    {
       action      = "block"
       expression  = var.waf_block_ruleset_expression
       description = "My Standard Block Rules"
@@ -39,15 +48,6 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
       expression  = var.waf_country_block_ruleset_expression
       description = "Country blocking Rules"
       enabled     = true
-    },
-    {
-      action      = "skip"
-      expression  = var.waf_allow_ruleset_expression
-      description = "My Standard Allow Rules"
-      enabled     = true
-      action_parameters = {
-        ruleset = "current"
-      }
     }
   ]
 
