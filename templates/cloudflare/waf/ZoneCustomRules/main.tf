@@ -23,7 +23,7 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
 
   rules = [
     {
-      action      = "skip"
+      action      = "allow"
       expression  = var.waf_allow_ruleset_expression
       description = "My Standard Allow Rules"
       enabled     = true
