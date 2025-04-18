@@ -14,9 +14,15 @@ or (cf.waf.credential_check.password_leaked)
 or (cf.api_gateway.fallthrough_detected)
 or (cf.verified_bot_category eq "Search Engine Crawler")
 or (cf.verified_bot_category eq "AI Crawler")
+or (cf.verified_bot_category eq "AI Assistant")
+or (cf.verified_bot_category eq "AI Search")
 or (cf.verified_bot_category eq "Aggregator")
 or (cf.verified_bot_category eq "Monitoring & Analytics")
 or (cf.verified_bot_category eq "Archiver")
+or (cf.verified_bot_category eq "Aggregator")
+or (ip.src.continent eq "T1")
+or (cf.waf.credential_check.password_leaked)
+or (cf.api_gateway.fallthrough_detected)
 EOF
 
 waf_country_block_ruleset_expression = <<-EOF
@@ -87,6 +93,10 @@ or (ip.src.country eq "UK")
 or (ip.src.country eq "VN")
 or (ip.src.country eq "T1")
 or (ip.src.country eq "PT")
+EOF
+
+waf_country_allow_ruleset_expression = <<-EOF
+(ip.geoip.country eq "US")
 EOF
 
 waf_block_ips_ruleset_expression = <<-EOF

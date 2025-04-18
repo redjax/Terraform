@@ -4,12 +4,6 @@ variable "cloudflare_email" {
   sensitive   = true
 }
 
-variable "cloudflare_api_key" {
-  description = "Cloudflare API key"
-  type        = string
-  sensitive   = true
-}
-
 variable "cloudflare_api_token" {
   description = "Cloudflare API token"
   type        = string
@@ -39,4 +33,10 @@ variable "waf_allow_ruleset_expression" {
 variable "waf_country_block_ruleset_expression" {
   description = "Expression(s) for BLOCK countries to apply to WAF"
   type        = string
+}
+
+variable "waf_country_allow_ruleset_expression" {
+  description = "Expression(s) for ALLOW countries (whitelist) to apply to WAF"
+  type        = string
+  default     = "(ip.geoip.country eq \"US\")"
 }
