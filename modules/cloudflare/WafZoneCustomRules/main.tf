@@ -18,6 +18,12 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
     },
     {
       action      = "block"
+      expression  = var.waf_country_block_ruleset_expression
+      description = "BLOCK Country Badness"
+      enabled     = true
+    },
+    {
+      action      = "block"
       expression  = var.waf_block_ruleset_expression
       description = "BLOCK Multi-Attribute Traffic Rules"
       enabled     = true
