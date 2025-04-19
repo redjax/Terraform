@@ -1,3 +1,8 @@
+########################
+# Cloudflare WAF Rules #
+########################
+
+## General BLOCK rules
 waf_block_ruleset_expression = <<-EOF
 (http.user_agent wildcard r"*Expanse*")
 or (http.user_agent wildcard r"*SemrushBot*")
@@ -25,6 +30,7 @@ or (cf.waf.credential_check.password_leaked)
 or (cf.api_gateway.fallthrough_detected)
 EOF
 
+## BLOCK country codes
 waf_country_block_ruleset_expression = <<-EOF
 (ip.geoip.country eq "AR")
 or (ip.geoip.country eq "AU")
@@ -95,10 +101,12 @@ or (ip.src.country eq "T1")
 or (ip.src.country eq "PT")
 EOF
 
+## ALLOW country codes
 waf_country_allow_ruleset_expression = <<-EOF
 (ip.geoip.country eq "US")
 EOF
 
+## BLOCK IP patterns
 waf_block_ips_ruleset_expression = <<-EOF
 (ip.src eq 157.66.55.118)
 or (ip.src eq 5.252.155.208)
@@ -189,13 +197,11 @@ or (ip.src.asnum eq 51167)
 or (ip.src.asnum eq 60068)
 or (ip.src.asnum eq 206092)
 or (ip.src.asnum eq 211298)
-or (ip.src.asnum eq 14061)
 or (ip.src.asnum eq 398324)
 or (ip.src.asnum eq 48090)
 or (ip.src.asnum eq 396982)
 or (ip.src.asnum eq 16509)
 or (ip.src.asnum eq 23959)
-or (ip.src.asnum eq 14061)
 or (ip.src.asnum eq 16276)
 or (ip.src.asnum eq 14956)
 or (ip.src.asnum eq 31898)
@@ -210,7 +216,6 @@ or (ip.src.asnum eq 13649)
 or (ip.src.asnum eq 14618)
 or (ip.src.asnum eq 63949)
 or (ip.src.asnum eq 46261)
-or (ip.src.asnum eq 3356)
 or (ip.src.asnum eq 204428)
 or (ip.src.asnum eq 209854)
 or (ip.src.asnum eq 7922)
@@ -221,10 +226,7 @@ or (ip.src.asnum eq 47764)
 or (ip.src.asnum eq 137409)
 or (ip.src.asnum eq 209366)
 or (ip.src.asnum eq 215826)
-or (ip.src.asnum eq 8075)
+or (ip.src.asnum eq 208046)
+or (ip.src.asnum eq 210531)
+or (ip.src.asnum eq 212441)
 EOF
-
-## Copy the lines below into your 'secrets.tfvars' file
-# waf_allow_ruleset_expression = <<-EOF
-# (ip.src eq xxx.xxx.xxx.xxx)
-# EOF
