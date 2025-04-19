@@ -3,9 +3,15 @@ Param(
     [Parameter(Mandatory = $false, HelpMessage = "Answer 'yes' to prompts")]
     [switch]$AutoApprove = $false,
     [Parameter(Mandatory = $false, HelpMessage = "Path to a tfvars file")]
-    [string]$TFVarsFile = "terraform.tfvars",
+    [string]$TFVarsFile = "waf.tfvars",
     [Parameter(Mandatory = $false, HelpMessage = "Path to a secrets.tfvars file")]
-    [string]$SecretsFile = "secrets.tfvars"
+    [string]$SecretsFile = "waf.secrets.tfvars",
+    [Parameter(Mandatory = $false, HelpMessage = "Plan only")]
+    [switch]$Plan,
+    [Parameter(Mandatory = $false, HelpMessage = "Validate template")]
+    [switch]$Validate,
+    [Parameter(Mandatory = $false, HelpMessage = "Upgrade module")]
+    [switch]$Upgrade
 )
 
 $PathSeparator = [IO.Path]::DirectorySeparatorChar
@@ -22,7 +28,7 @@ Write-Verbose "Secrets dir: $($SecretsRoot), exists: $(Test-Path -Path $SecretsR
 
 [string]$ModulePath = (Resolve-Path "$($ModulesRoot)$($PathSeparator)cloudflare$($PathSeparator)WafZoneCustomRules").Path
 [string]$EnvironmentPath = (Resolve-Path "$($EnvironmentsRoot)$($PathSeparator)cloudflare").Path
-[string]$VarsPath = (Resolve-Path "$($VarsRoot)$($PathSeparator)cloudflare$($PathSeparator)wafrules.tfvars").Path
+[string]$VarsPath = (Resolve-Path "$($VarsRoot)$($PathSeparator)cloudflare$($PathSeparator)$($TFVarsFile)").Path
 [string]$SecretsPath = (Resolve-Path "$($SecretsRoot)$($PathSeparator)cloudflare$($PathSeparator)$($SecretsFile)").Path
 
 Write-Verbose "Module dir: $($ModulePath), exists: $(Test-Path -Path $ModulePath)"
@@ -35,20 +41,41 @@ if ( -Not ( Get-Command "terraform" ) ) {
     exit 1
 }
 
-Write-Information "Applying custom Cloudflare WAF ruleset"
-try {
-    if ( -Not $AutoApprove ) {
-        terraform -chdir="$($EnvironmentPath)" apply -var-file="$VarsPath" -var-file="$SecretsPath"
-        Write-Information "Applied custom Cloudflare WAF ruleset"
-        exit 0
-    }
-    else {
-        terraform -chdir="$($EnvironmentPath)" apply -var-file="$VarsPath" -var-file="$SecretsPath" -auto-approve
-        Write-Information "Applied custom Cloudflare WAF ruleset"
-        exit 0
-    }
+if ( $Upgrade ) {
+    Write-Information "Upgrading Cloudflare module"
+    terraform -chdir="$($ModulePath)" init -upgrade
+    exit 0
 }
-catch {
-    Write-Error "Failed to apply custom Cloudflare WAF ruleset"
-    exit 1
+
+if ( $Validate ) {
+    Write-Information "Validating custom Cloudflare WAF ruleset"
+    terraform -chdir="$($EnvironmentPath)" validate
+    exit 0
+}
+
+if ( $Plan ) {
+    Write-Information "Planning custom Cloudflare WAF ruleset"
+    terraform -chdir="$($EnvironmentPath)" plan -var-file="$VarsPath" -var-file="$SecretsPath"
+    exit 0
+}
+else {
+
+    Write-Information "Applying custom Cloudflare WAF ruleset"
+    try {
+        if ( -Not $AutoApprove ) {
+            terraform -chdir="$($EnvironmentPath)" apply -var-file="$VarsPath" -var-file="$SecretsPath"
+            Write-Information "Applied custom Cloudflare WAF ruleset"
+            exit 0
+        }
+        else {
+            terraform -chdir="$($EnvironmentPath)" apply -var-file="$VarsPath" -var-file="$SecretsPath" -auto-approve
+            Write-Information "Applied custom Cloudflare WAF ruleset"
+            exit 0
+        }
+    }
+    catch {
+        Write-Error "Failed to apply custom Cloudflare WAF ruleset"
+        exit 1
+    }
+
 }
