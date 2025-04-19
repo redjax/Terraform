@@ -2,7 +2,7 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
   for_each    = toset(var.cloudflare_zone_ids)
   zone_id     = each.value
   name        = "Standard WAF Rules for ${each.value}"
-  description = "Standard WAF rulees for ${each.value}"
+  description = "Standard WAF rules for ${each.value}"
   kind        = "zone"
   phase       = "http_request_firewall_custom"
 
