@@ -23,7 +23,7 @@ Param(
 
 $PathSeparator = [IO.Path]::DirectorySeparatorChar
 
-[string]$TemplatePath = "templates$($PathSeparator)cloudflare$($PathSeparator)waf$($PathSeparator)ZoneCustomRules"
+[string]$TemplatePath = "modules$($PathSeparator)cloudflare$($PathSeparator)waf$($PathSeparator)ZoneCustomRules"
 [string]$SecretsFilePath = (Join-Path -Path $TemplatePath -ChildPath $SecretsFile)
 
 Write-Verbose "TemplatePath: $TemplatePath"
