@@ -1,6 +1,4 @@
 template_name        = "deb12-lxc-template"
-lxc_ip               = "192.168.1.254"
-gateway              = "192.168.1.1"
 container_name       = "tf-lxc-deploy"
 cpu_cores            = 2
 memory_mb            = 2048

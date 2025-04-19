@@ -1,1 +1,2 @@
+!proxmox/lxc.tfvars
 !cloudflare/waf.tfvars
