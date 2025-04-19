@@ -22,7 +22,7 @@ Write-Verbose "Secrets dir: $($SecretsRoot), exists: $(Test-Path -Path $SecretsR
 
 [string]$ModulePath = (Resolve-Path "$($ModulesRoot)$($PathSeparator)cloudflare$($PathSeparator)WafZoneCustomRules").Path
 [string]$EnvironmentPath = (Resolve-Path "$($EnvironmentsRoot)$($PathSeparator)cloudflare").Path
-[string]$VarsPath = (Resolve-Path "$($VarsRoot)$($PathSeparator)cloudflare.tfvars").Path
+[string]$VarsPath = (Resolve-Path "$($VarsRoot)$($PathSeparator)cloudflare$($PathSeparator)wafrules.tfvars").Path
 [string]$SecretsPath = (Resolve-Path "$($SecretsRoot)$($PathSeparator)cloudflare$($PathSeparator)$($SecretsFile)").Path
 
 Write-Verbose "Module dir: $($ModulePath), exists: $(Test-Path -Path $ModulePath)"
