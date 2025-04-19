@@ -4,3 +4,4 @@ cloudflare/*
 !proxmox/*example*.tfvars
 !cloudflare/*example*.tfvars
 !cloudflare/waf.tfvars
+!unifi/unifi.tfvars
