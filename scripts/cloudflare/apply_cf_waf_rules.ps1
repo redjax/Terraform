@@ -65,7 +65,7 @@ if ( -Not $S3CredentialsLoaded ) {
     exit(1)
 }
 else {
-    Write-Debug "S3 credentials loaded successfully."
+    Write-Output "S3 credentials loaded successfully."
 
     Write-Verbose "Key ID: $($env:AWS_ACCESS_KEY_ID)"
     Write-Verbose "Key Secret: $($env:AWS_SECRET_ACCESS_KEY)"
@@ -103,47 +103,37 @@ if ( -Not ( Get-Command "terraform" ) ) {
 }
 
 ## Validate input parameters
-if ( $Init ) {
-    Write-Information "Initializing Cloudflare module"
-    terraform -chdir="environments/cloudflare" init
-    exit 0
-}
-
-if ( $Upgrade ) {
-    Write-Information "Upgrading Cloudflare module"
-    terraform -chdir="$($ModulePath)" init -upgrade
-    exit 0
-}
-
-if ( $Validate ) {
-    Write-Information "Validating custom Cloudflare WAF ruleset"
-    terraform -chdir="$($EnvironmentPath)" validate
-    exit 0
-}
-
-if ( $Plan ) {
-    Write-Information "Planning custom Cloudflare WAF ruleset"
-    terraform -chdir="$($EnvironmentPath)" plan -var-file="$VarsPath" -var-file="$SecretsPath"
-    exit 0
-}
-else {
-
-    Write-Information "Applying custom Cloudflare WAF ruleset"
-    try {
-        if ( -Not $AutoApprove ) {
-            terraform -chdir="$($EnvironmentPath)" apply -var-file="$VarsPath" -var-file="$SecretsPath"
-            Write-Information "Applied custom Cloudflare WAF ruleset"
-            exit 0
+switch ($true) {
+    { $Init } {
+        Write-Information "Initializing Cloudflare module"
+        terraform -chdir="environments/cloudflare" init
+    }
+    { $Upgrade } {
+        Write-Information "Upgrading Cloudflare module"
+        terraform -chdir="$($ModulePath)" init -upgrade
+    }
+    { $Validate } {
+        Write-Information "Validating custom Cloudflare WAF ruleset"
+        terraform -chdir="$($EnvironmentPath)" validate
+    }
+    { $Plan } {
+        Write-Information "Planning custom Cloudflare WAF ruleset"
+        terraform -chdir="$($EnvironmentPath)" plan -var-file="$VarsPath" -var-file="$SecretsPath"
+    }
+    default {
+        Write-Information "Applying custom Cloudflare WAF ruleset"
+        $applyCommand = "terraform -chdir=`"$($EnvironmentPath)`" apply -var-file=`"$VarsPath`" -var-file=`"$SecretsPath`""
+        if ($AutoApprove) {
+            $applyCommand += " -auto-approve"
         }
-        else {
-            terraform -chdir="$($EnvironmentPath)" apply -var-file="$VarsPath" -var-file="$SecretsPath" -auto-approve
+
+        try {
+            Invoke-Expression $applyCommand
             Write-Information "Applied custom Cloudflare WAF ruleset"
-            exit 0
+        }
+        catch {
+            Write-Error "Failed to apply custom Cloudflare WAF ruleset"
+            exit 1
         }
     }
-    catch {
-        Write-Error "Failed to apply custom Cloudflare WAF ruleset"
-        exit 1
-    }
-
 }
