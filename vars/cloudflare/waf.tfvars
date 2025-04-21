@@ -2,8 +2,8 @@
 # Cloudflare WAF Rules #
 ########################
 
-## General BLOCK rules
-waf_block_ruleset_expression = <<-EOF
+## Unified blocklist
+waf_combined_block_ruleset_expression = <<-EOF
 (http.user_agent wildcard r"*Expanse*")
 or (http.user_agent wildcard r"*SemrushBot*")
 or (http.user_agent wildcard r"*Expanse*Palo*Alto*")
@@ -15,8 +15,6 @@ or (http.user_agent wildcard r"*Censys*")
 or (http.user_agent wildcard r"*censys*")
 or (http.user_agent wildcard r"*AliyunSecBot*")
 or (cf.client.bot)
-or (cf.waf.credential_check.password_leaked)
-or (cf.api_gateway.fallthrough_detected)
 or (cf.verified_bot_category eq "Search Engine Crawler")
 or (cf.verified_bot_category eq "AI Crawler")
 or (cf.verified_bot_category eq "AI Assistant")
@@ -24,48 +22,8 @@ or (cf.verified_bot_category eq "AI Search")
 or (cf.verified_bot_category eq "Aggregator")
 or (cf.verified_bot_category eq "Monitoring & Analytics")
 or (cf.verified_bot_category eq "Archiver")
-or (cf.verified_bot_category eq "Aggregator")
-or (ip.src.continent eq "T1")
-or (cf.waf.credential_check.password_leaked)
 or (cf.api_gateway.fallthrough_detected)
-EOF
-
-## BLOCK country codes
-waf_country_block_ruleset_expression = <<-EOF
-(ip.geoip.country eq "AR")
-or (ip.geoip.country eq "AU")
-or (ip.geoip.country eq "AT")
-or (ip.geoip.country eq "BG")
-or (ip.geoip.country eq "BY")
-or (ip.geoip.country eq "CA")
-or (ip.geoip.country eq "CH")
-or (ip.geoip.country eq "CN")
-or (ip.geoip.country eq "DE")
-or (ip.geoip.country eq "FR")
-or (ip.geoip.country eq "IE")
-or (ip.geoip.country eq "HK")
-or (ip.geoip.country eq "ID")
-or (ip.geoip.country eq "IN")
-or (ip.geoip.country eq "IR")
-or (ip.geoip.country eq "JP")
-or (ip.geoip.country eq "KY")
-or (ip.geoip.country eq "MX")
-or (ip.geoip.country eq "MY")
-or (ip.geoip.country eq "NL")
-or (ip.geoip.country eq "PA")
-or (ip.geoip.country eq "RO")
-or (ip.geoip.country eq "RU")
-or (ip.geoip.country eq "SC")
-or (ip.geoip.country eq "SE")
-or (ip.geoip.country eq "SG")
-or (ip.geoip.country eq "TR")
-or (ip.geoip.country eq "UA")
-or (ip.geoip.country eq "UK")
-or (ip.geoip.country eq "VN")
-or (ip.geoip.country eq "HK")
-or (ip.geoip.country eq "CN")
-or (ip.geoip.country eq "T1")
-or (ip.geoip.country eq "MD")
+or (cf.waf.credential_check.password_leaked)
 or (ip.src.country eq "AR")
 or (ip.src.country eq "AU")
 or (ip.src.country eq "AT")
@@ -76,6 +34,7 @@ or (ip.src.country eq "CH")
 or (ip.src.country eq "CN")
 or (ip.src.country eq "DE")
 or (ip.src.country eq "FR")
+or (ip.src.country eq "GB")
 or (ip.src.country eq "HK")
 or (ip.src.country eq "IE")
 or (ip.src.country eq "ID")
@@ -88,6 +47,7 @@ or (ip.src.country eq "MX")
 or (ip.src.country eq "MY")
 or (ip.src.country eq "NL")
 or (ip.src.country eq "PA")
+or (ip.src.country eq "PT")
 or (ip.src.country eq "RO")
 or (ip.src.country eq "RU")
 or (ip.src.country eq "SC")
@@ -95,19 +55,11 @@ or (ip.src.country eq "SE")
 or (ip.src.country eq "SG")
 or (ip.src.country eq "TR")
 or (ip.src.country eq "UA")
-or (ip.src.country eq "UK")
 or (ip.src.country eq "VN")
-or (ip.src.country eq "T1")
-or (ip.src.country eq "PT")
 EOF
 
-## ALLOW country codes
-waf_country_allow_ruleset_expression = <<-EOF
-(ip.geoip.country eq "US")
-EOF
-
-## BLOCK IP patterns
-waf_block_ips_ruleset_expression = <<-EOF
+## Separate IP blocking because the ruleset gets too large
+waf_ip_block_ruleset_expression = <<-EOF
 (ip.src eq 157.66.55.118)
 or (ip.src eq 5.252.155.208)
 or (ip.src eq 52.254.9.238)
@@ -175,6 +127,8 @@ or (ip.src eq 49.51.73.183)
 or (ip.src eq 40.71.20.114)
 or (ip.src eq 13.77.80.114)
 or (ip.src eq 138.246.253.24)
+or (ip.src eq 91.209.135.71)
+or (ip.src eq 43.135.145.117)
 or (ip.src.asnum eq 12816)
 or (ip.src.asnum eq 58519)
 or (ip.src.asnum eq 216071)
@@ -229,4 +183,9 @@ or (ip.src.asnum eq 215826)
 or (ip.src.asnum eq 208046)
 or (ip.src.asnum eq 210531)
 or (ip.src.asnum eq 212441)
+EOF
+
+## ALLOW country codes
+waf_country_allow_ruleset_expression = <<-EOF
+(ip.src.country eq "US")
 EOF
