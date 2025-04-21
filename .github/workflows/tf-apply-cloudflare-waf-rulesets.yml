@@ -16,7 +16,7 @@ jobs:
     env:
       TF_VAR_cloudflare_email: ${{ secrets.CF_API_EMAIL }}
       TF_VAR_cloudflare_api_token: ${{ secrets.CF_API_TOKEN }}
-      TF_VAR_zone_ids: ${{ secrets.CF_ZONE_IDS }}
+      TF_VAR_cloudflare_zone_ids: ${{ secrets.CF_ZONE_IDS }}
       TF_VAR_waf_allow_ruleset_expression: ${{ secrets.CF_WAF_ALLOW_RULESET }}
 
       ## Backblaze B2 S3 storage backend. Loads from Github environment secrets
