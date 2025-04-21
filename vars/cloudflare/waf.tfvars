@@ -2,8 +2,8 @@
 # Cloudflare WAF Rules #
 ########################
 
-## General BLOCK rules
-waf_block_ruleset_expression = <<-EOF
+## Unified blocklist
+waf_combined_block_ruleset_expression = <<-EOF
 (http.user_agent wildcard r"*Expanse*")
 or (http.user_agent wildcard r"*SemrushBot*")
 or (http.user_agent wildcard r"*Expanse*Palo*Alto*")
@@ -28,44 +28,6 @@ or (cf.verified_bot_category eq "Aggregator")
 or (ip.src.continent eq "T1")
 or (cf.waf.credential_check.password_leaked)
 or (cf.api_gateway.fallthrough_detected)
-EOF
-
-## BLOCK country codes
-waf_country_block_ruleset_expression = <<-EOF
-(ip.geoip.country eq "AR")
-or (ip.geoip.country eq "AU")
-or (ip.geoip.country eq "AT")
-or (ip.geoip.country eq "BG")
-or (ip.geoip.country eq "BY")
-or (ip.geoip.country eq "CA")
-or (ip.geoip.country eq "CH")
-or (ip.geoip.country eq "CN")
-or (ip.geoip.country eq "DE")
-or (ip.geoip.country eq "FR")
-or (ip.geoip.country eq "IE")
-or (ip.geoip.country eq "HK")
-or (ip.geoip.country eq "ID")
-or (ip.geoip.country eq "IN")
-or (ip.geoip.country eq "IR")
-or (ip.geoip.country eq "JP")
-or (ip.geoip.country eq "KY")
-or (ip.geoip.country eq "MX")
-or (ip.geoip.country eq "MY")
-or (ip.geoip.country eq "NL")
-or (ip.geoip.country eq "PA")
-or (ip.geoip.country eq "RO")
-or (ip.geoip.country eq "RU")
-or (ip.geoip.country eq "SC")
-or (ip.geoip.country eq "SE")
-or (ip.geoip.country eq "SG")
-or (ip.geoip.country eq "TR")
-or (ip.geoip.country eq "UA")
-or (ip.geoip.country eq "UK")
-or (ip.geoip.country eq "VN")
-or (ip.geoip.country eq "HK")
-or (ip.geoip.country eq "CN")
-or (ip.geoip.country eq "T1")
-or (ip.geoip.country eq "MD")
 or (ip.src.country eq "AR")
 or (ip.src.country eq "AU")
 or (ip.src.country eq "AT")
@@ -101,13 +63,8 @@ or (ip.src.country eq "T1")
 or (ip.src.country eq "PT")
 EOF
 
-## ALLOW country codes
-waf_country_allow_ruleset_expression = <<-EOF
-(ip.geoip.country eq "US")
-EOF
-
-## BLOCK IP patterns
-waf_block_ips_ruleset_expression = <<-EOF
+## Separate IP blocking because the ruleset gets too large
+waf_ip_block_ruleset_expression = <<-EOF
 (ip.src eq 157.66.55.118)
 or (ip.src eq 5.252.155.208)
 or (ip.src eq 52.254.9.238)
@@ -231,4 +188,9 @@ or (ip.src.asnum eq 215826)
 or (ip.src.asnum eq 208046)
 or (ip.src.asnum eq 210531)
 or (ip.src.asnum eq 212441)
+EOF
+
+## ALLOW country codes
+waf_country_allow_ruleset_expression = <<-EOF
+(ip.geoip.country eq "US")
 EOF
