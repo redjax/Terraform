@@ -37,7 +37,7 @@ jobs:
         run: terraform -chdir=environments/cloudflare validate
 
       - name: Terraform Plan
-        run: terraform -chdir=environments/cloudflare plan -var-file=../../vars/cloudflare/waf.tfvars
+        run: terraform -chdir=environments/cloudflare plan -input=false -no-color -var-file=../../vars/cloudflare/waf.tfvars
 
       - name: Terraform Apply
         run: terraform -chdir=environments/cloudflare apply -auto-approve -var-file=../../vars/cloudflare/waf.tfvars
