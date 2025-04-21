@@ -1,3 +1,16 @@
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 5.0"
+    }
+    b2 = {
+      source  = "Backblaze/b2"
+      version = "~> 0.10.0"
+    }
+  }
+}
+
 module "waf_zone_custom_rules" {
   source = "../../modules/cloudflare/WafZoneCustomRules"
 
