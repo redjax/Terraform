@@ -11,7 +11,9 @@ Param(
     [Parameter(Mandatory = $false, HelpMessage = "Validate template")]
     [switch]$Validate,
     [Parameter(Mandatory = $false, HelpMessage = "Upgrade module")]
-    [switch]$Upgrade
+    [switch]$Upgrade,
+    [Parameter(Mandatory = $false, HelpMessage = "Initialize module")]
+    [switch]$Init
 )
 
 $PathSeparator = [IO.Path]::DirectorySeparatorChar
@@ -39,6 +41,12 @@ Write-Verbose "Secrets file: $($SecretsPath), exists: $(Test-Path -Path $Secrets
 if ( -Not ( Get-Command "terraform" ) ) {
     Write-Error "Terraform is not installed"
     exit 1
+}
+
+if ( $Init ) {
+    Write-Information "Initializing Cloudflare module"
+    terraform -chdir="$($ModulePath)" init
+    exit 0
 }
 
 if ( $Upgrade ) {
