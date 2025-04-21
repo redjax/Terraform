@@ -16,6 +16,17 @@ Param(
     [switch]$Init
 )
 
+## The Cloudflare module uses Backblaze B2 for .tfstate storage.
+#  Ensure AWS credentials are set in the environment
+if ( -Not $env:AWS_ACCESS_KEY_ID ) {
+    Write-Error "AWS_ACCESS_KEY_ID is not set. This is required for Terraform's .tfstate S3 storage."
+    exit 1
+}
+if ( -Not $env:AWS_SECRET_ACCESS_KEY ) {
+    Write-Error "AWS_SECRET_ACCESS_KEY is not set. This is required for Terraform's .tfstate S3 storage."
+    exit 1
+}
+
 $PathSeparator = [IO.Path]::DirectorySeparatorChar
 
 [string]$ModulesRoot = "modules"
