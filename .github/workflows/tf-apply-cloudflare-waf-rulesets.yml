@@ -11,6 +11,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: "cloudflare waf"
 
     env:
       TF_VAR_cloudflare_email: ${{ secrets.CF_API_EMAIL }}
