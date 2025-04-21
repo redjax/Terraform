@@ -1,0 +1,38 @@
+---
+########################################
+# Manage Cloudflare WAF with Terraform #
+########################################
+
+name: Deploy Cloudflare WAF Rules
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      TF_VAR_cloudflare_email: ${{ secrets.CF_API_EMAIL }}
+      TF_VAR_cloudflare_api_token: ${{ secrets.CF_API_TOKEN }}
+      TF_VAR_zone_ids: ${{ secrets.CF_ZONE_IDS }}
+      TF_VAR_waf_allow_ruleset_expression: ${{ secrets.CF_WAF_ALLOW_RULESET }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform -chdir=environments/cloudflare init
+
+      - name: Terraform Validate
+        run: terraform -chdir=environments/cloudflare validate
+
+      - name: Terraform Plan
+        run: terraform -chdir=environments/cloudflare plan -var-file=../../vars/cloudflare/waf.tfvars
+
+      - name: Terraform Apply
+        run: terraform -chdir=environments/cloudflare apply -auto-approve -var-file=../../vars/cloudflare/waf.tfvars
