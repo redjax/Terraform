@@ -13,30 +13,28 @@ variable "cloudflare_api_token" {
 variable "cloudflare_zone_ids" {
   description = "List of Cloudflare zone IDs to apply WAF rules to"
   type        = list(string)
-}
-
-variable "waf_block_ruleset_expression" {
-  description = "Expression(s) for BLOCK rules to apply to WAF"
-  type        = string
-}
-
-variable "waf_block_ips_ruleset_expression" {
-  description = "Expression(s) for BLOCK IP addresses/ANUMs to apply to WAF"
-  type        = string
+  sensitive   = true
 }
 
 variable "waf_allow_ruleset_expression" {
   description = "Expression(s) for ALLOW rules to apply to WAF"
   type        = string
-}
-
-variable "waf_country_block_ruleset_expression" {
-  description = "Expression(s) for BLOCK countries to apply to WAF"
-  type        = string
+  sensitive   = true
 }
 
 variable "waf_country_allow_ruleset_expression" {
   description = "Expression(s) for ALLOW countries (whitelist) to apply to WAF"
   type        = string
   default     = "(ip.geoip.country eq \"US\")"
+  sensitive   = true
+}
+
+variable "waf_combined_block_ruleset_expression" {
+  description = "Unified BLOCK expressions to apply to WAF"
+  type        = string
+}
+
+variable "waf_ip_block_ruleset_expression" {
+  description = "IP BLOCK expressions to apply to WAF"
+  type        = string
 }

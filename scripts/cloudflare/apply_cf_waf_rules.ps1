@@ -11,8 +11,21 @@ Param(
     [Parameter(Mandatory = $false, HelpMessage = "Validate template")]
     [switch]$Validate,
     [Parameter(Mandatory = $false, HelpMessage = "Upgrade module")]
-    [switch]$Upgrade
+    [switch]$Upgrade,
+    [Parameter(Mandatory = $false, HelpMessage = "Initialize module")]
+    [switch]$Init
 )
+
+## The Cloudflare module uses Backblaze B2 for .tfstate storage.
+#  Ensure AWS credentials are set in the environment
+if ( -Not $env:AWS_ACCESS_KEY_ID ) {
+    Write-Error "AWS_ACCESS_KEY_ID is not set. This is required for Terraform's .tfstate S3 storage."
+    exit 1
+}
+if ( -Not $env:AWS_SECRET_ACCESS_KEY ) {
+    Write-Error "AWS_SECRET_ACCESS_KEY is not set. This is required for Terraform's .tfstate S3 storage."
+    exit 1
+}
 
 $PathSeparator = [IO.Path]::DirectorySeparatorChar
 
@@ -39,6 +52,12 @@ Write-Verbose "Secrets file: $($SecretsPath), exists: $(Test-Path -Path $Secrets
 if ( -Not ( Get-Command "terraform" ) ) {
     Write-Error "Terraform is not installed"
     exit 1
+}
+
+if ( $Init ) {
+    Write-Information "Initializing Cloudflare module"
+    terraform -chdir="environments/cloudflare" init
+    exit 0
 }
 
 if ( $Upgrade ) {
