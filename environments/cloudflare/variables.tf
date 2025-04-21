@@ -13,17 +13,20 @@ variable "cloudflare_api_token" {
 variable "cloudflare_zone_ids" {
   description = "List of Cloudflare zone IDs to apply WAF rules to"
   type        = list(string)
+  sensitive   = true
 }
 
 variable "waf_allow_ruleset_expression" {
   description = "Expression(s) for ALLOW rules to apply to WAF"
   type        = string
+  sensitive   = true
 }
 
 variable "waf_country_allow_ruleset_expression" {
   description = "Expression(s) for ALLOW countries (whitelist) to apply to WAF"
   type        = string
   default     = "(ip.geoip.country eq \"US\")"
+  sensitive   = true
 }
 
 variable "waf_combined_block_ruleset_expression" {
