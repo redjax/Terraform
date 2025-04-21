@@ -1,0 +1,47 @@
+---
+########################################
+# Manage Cloudflare WAF with Terraform #
+########################################
+
+name: Deploy Cloudflare WAF Rules
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: "cloudflare waf"
+
+    env:
+      TF_VAR_cloudflare_email: ${{ secrets.CF_API_EMAIL }}
+      TF_VAR_cloudflare_api_token: ${{ secrets.CF_API_TOKEN }}
+      TF_VAR_cloudflare_zone_ids: ${{ secrets.CF_ZONE_IDS }}
+      TF_VAR_waf_allow_ruleset_expression: ${{ secrets.CF_WAF_ALLOW_RULESET }}
+
+      ## Backblaze B2 S3 storage backend. Loads from Github environment secrets
+      AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+
+      ## Fixes an authentication error with Backblaze B2
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform -chdir=environments/cloudflare init
+
+      - name: Terraform Validate
+        run: terraform -chdir=environments/cloudflare validate
+
+      - name: Terraform Plan
+        run: terraform -chdir=environments/cloudflare plan -input=false -no-color -var-file=../../vars/cloudflare/waf.tfvars
+
+      - name: Terraform Apply
+        run: terraform -chdir=environments/cloudflare apply -auto-approve -var-file=../../vars/cloudflare/waf.tfvars
