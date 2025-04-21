@@ -45,7 +45,7 @@ if ( -Not ( Get-Command "terraform" ) ) {
 
 if ( $Init ) {
     Write-Information "Initializing Cloudflare module"
-    terraform -chdir="$($ModulePath)" init
+    terraform -chdir="environments/cloudflare" init
     exit 0
 }
 
