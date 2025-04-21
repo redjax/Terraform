@@ -2,8 +2,10 @@
 *.tfstate
 *.tfstate*
 .terraform/
+.secrets/*
 
 !terraform.tfvars
 !*example*
+!.secrets/.gitignore
 
 !varsfiles/*.tfvars
