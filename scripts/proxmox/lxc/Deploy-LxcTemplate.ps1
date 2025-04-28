@@ -1,13 +1,12 @@
-# terraform -chdir="environments/cloudflare" apply -var-file="../../.secrets/cloudflare/secrets.tfvars" -var-file="../../vars/cloudflare.tfvars"
 Param(
     [Parameter(Mandatory = $false, HelpMessage = "Path to S3 storage provider credentials.")]
     [string]$S3CredentialsFile = ".secrets/backblazeB2/b2.secrets.ps1",
     [Parameter(Mandatory = $false, HelpMessage = "Answer 'yes' to prompts")]
     [switch]$AutoApprove = $false,
     [Parameter(Mandatory = $false, HelpMessage = "Path to a tfvars file")]
-    [string]$TFVarsFile = "waf.tfvars",
+    [string]$TFVarsFile = "lxc.tfvars",
     [Parameter(Mandatory = $false, HelpMessage = "Path to a secrets.tfvars file")]
-    [string]$SecretsFile = "waf.secrets.tfvars",
+    [string]$SecretsFile = "lxc.secrets.tfvars",
     [Parameter(Mandatory = $false, HelpMessage = "Plan only")]
     [switch]$Plan,
     [Parameter(Mandatory = $false, HelpMessage = "Validate template")]
@@ -17,10 +16,10 @@ Param(
     [Parameter(Mandatory = $false, HelpMessage = "Initialize module")]
     [switch]$Init
 )
-
-## The Cloudflare module uses Backblaze B2 for .tfstate storage.
+## The Proxmox lxc module uses Backblaze B2 for .tfstate storage.
 #  Ensure AWS credentials are set in the environment
 #  Try loading from .secrets/cloudflare/b2.secrets.ps1
+
 if ( -Not $env:AWS_ACCESS_KEY_ID ) {
     Write-Warning "AWS_ACCESS_KEY_ID is not set. This is required for Terraform's .tfstate S3 storage."
     $S3CredentialsLoaded = $false
@@ -85,11 +84,11 @@ Write-Verbose "Environments dir: $($EnvironmentsRoot), exists: $(Test-Path -Path
 Write-Verbose "Vars dir: $($VarsRoot), exists: $(Test-Path -Path $VarsRoot)"
 Write-Verbose "Secrets dir: $($SecretsRoot), exists: $(Test-Path -Path $SecretsRoot)"
 
-## Set paths to Cloudflare module, environment, vars, and secrets
-[string]$ModulePath = (Resolve-Path "$($ModulesRoot)$($PathSeparator)cloudflare$($PathSeparator)WafZoneCustomRules").Path
-[string]$EnvironmentPath = (Resolve-Path "$($EnvironmentsRoot)$($PathSeparator)cloudflare").Path
-[string]$VarsPath = (Resolve-Path "$($VarsRoot)$($PathSeparator)cloudflare$($PathSeparator)$($TFVarsFile)").Path
-[string]$SecretsPath = (Resolve-Path "$($SecretsRoot)$($PathSeparator)cloudflare$($PathSeparator)$($SecretsFile)").Path
+## Set paths to Proxmox module, environment, vars, and secrets
+[string]$ModulePath = (Resolve-Path "$($ModulesRoot)$($PathSeparator)proxmox$($PathSeparator)lxc").Path
+[string]$EnvironmentPath = (Resolve-Path "$($EnvironmentsRoot)$($PathSeparator)proxmox$($PathSeparator)lxc").Path
+[string]$VarsPath = (Resolve-Path "$($VarsRoot)$($PathSeparator)proxmox$($PathSeparator)$($TFVarsFile)").Path
+[string]$SecretsPath = (Resolve-Path "$($SecretsRoot)$($PathSeparator)proxmox$($PathSeparator)$($SecretsFile)").Path
 
 Write-Verbose "Module dir: $($ModulePath), exists: $(Test-Path -Path $ModulePath)"
 Write-Verbose "Environment dir: $($EnvironmentPath), exists: $(Test-Path -Path $EnvironmentPath)"
@@ -105,23 +104,23 @@ if ( -Not ( Get-Command "terraform" ) ) {
 ## Validate input parameters
 switch ($true) {
     { $Init } {
-        Write-Information "Initializing Cloudflare module"
-        terraform -chdir="environments/cloudflare" init
+        Write-Information "Initializing Proxmox module"
+        terraform -chdir="environments/proxmox" init
     }
     { $Upgrade } {
-        Write-Information "Upgrading Cloudflare module"
+        Write-Information "Upgrading Proxmox module"
         terraform -chdir="$($ModulePath)" init -upgrade
     }
     { $Validate } {
-        Write-Information "Validating custom Cloudflare WAF ruleset"
+        Write-Information "Validating custom Proxmox LXC template"
         terraform -chdir="$($EnvironmentPath)" validate
     }
     { $Plan } {
-        Write-Information "Planning custom Cloudflare WAF ruleset"
+        Write-Information "Planning Proxmox LXC container deploy"
         terraform -chdir="$($EnvironmentPath)" plan -var-file="$VarsPath" -var-file="$SecretsPath"
     }
     default {
-        Write-Information "Applying custom Cloudflare WAF ruleset"
+        Write-Information "Deploying LXC template"
         $applyCommand = "terraform -chdir=`"$($EnvironmentPath)`" apply -var-file=`"$VarsPath`" -var-file=`"$SecretsPath`""
         if ($AutoApprove) {
             $applyCommand += " -auto-approve"
@@ -129,10 +128,10 @@ switch ($true) {
 
         try {
             Invoke-Expression $applyCommand
-            Write-Information "Applied custom Cloudflare WAF ruleset"
+            Write-Information "LXC template deployed"
         }
         catch {
-            Write-Error "Failed to apply custom Cloudflare WAF ruleset"
+            Write-Error "Failed to deploy LXC template"
             exit 1
         }
     }

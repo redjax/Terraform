@@ -1,4 +1,10 @@
 cloudflare/*
+proxmox/*
+backblazeB2/*
 
 !cloudflare/
 !cloudflare/example*.ps1
+!proxmox/
+!proxmox/example*.ps1
+!backblazeB2/
+!backblazeB2/example*.ps1
