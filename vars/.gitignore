@@ -1,2 +1,6 @@
-!proxmox/lxc.tfvars
+proxmox/*
+cloudflare/*
+
+!proxmox/*example*.tfvars
+!cloudflare/*example*.tfvars
 !cloudflare/waf.tfvars
