@@ -5,3 +5,4 @@ cloudflare/*
 !cloudflare/*example*.tfvars
 !cloudflare/waf.tfvars
 !unifi/unifi.tfvars
+!unifi/unifi.tfvars
