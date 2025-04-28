@@ -1,3 +1,4 @@
+proxmox_node_name    = "<Proxmox node name (i.e. not an IP or FQDN)>"
 proxmox_token_id     = "<Proxmox API token ID>"
 proxmox_token_secret = "<Proxmox token secret>"
 lxc_root_password    = "<Root password for LXC container>"

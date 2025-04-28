@@ -1,7 +1,7 @@
 resource "proxmox_lxc" "test_container" {
   count       = 1
-  target_node = var.proxmox_host
-  ostemplate  = var.template_name     # Specify your OS template
+  target_node = var.proxmox_node_name
+  ostemplate  = "${var.template_storage}:vztmpl/${var.template_name}"
   password    = var.lxc_root_password # Root password for the LXC container
   cores       = var.cpu_cores
   memory      = var.memory_mb

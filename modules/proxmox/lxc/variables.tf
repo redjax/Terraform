@@ -3,6 +3,16 @@ variable "proxmox_host" {
   type        = string
 }
 
+variable "proxmox_node_name" {
+  description = "Proxmox node name (not IP/FQDN)"
+  type        = string
+}
+
+variable "template_storage" {
+  description = "The Proxmox storage where the LXC template is stored"
+  type        = string
+}
+
 variable "proxmox_port" {
   description = "Port for Proxmox host"
   type        = number
