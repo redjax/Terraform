@@ -132,6 +132,7 @@ or (ip.src eq 138.246.253.24)
 or (ip.src eq 91.209.135.71)
 or (ip.src eq 43.135.145.117)
 or (ip.src eq 119.156.228.168)
+or (ip.src eq 107.174.224.18)
 or (ip.src.asnum eq 12816)
 or (ip.src.asnum eq 58519)
 or (ip.src.asnum eq 216071)
@@ -186,6 +187,7 @@ or (ip.src.asnum eq 215826)
 or (ip.src.asnum eq 208046)
 or (ip.src.asnum eq 210531)
 or (ip.src.asnum eq 212441)
+or (ip.src.asnum eq 36352)
 EOF
 
 ## ALLOW country codes
