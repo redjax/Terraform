@@ -15,7 +15,9 @@ Param(
     [Parameter(Mandatory = $false, HelpMessage = "Upgrade module")]
     [switch]$Upgrade,
     [Parameter(Mandatory = $false, HelpMessage = "Initialize module")]
-    [switch]$Init
+    [switch]$Init,
+    [Parameter(Mandatory = $false, HelpMessage = "Initialize & migrate state")]
+    [switch]$Migrate
 )
 
 ## The Cloudflare module uses Backblaze B2 for .tfstate storage.
@@ -58,6 +60,10 @@ if ( -Not $S3CredentialsLoaded ) {
 
     ## Indicate that S3 credentials were loaded into env vars successfully
     $S3CredentialsLoaded = $true
+
+    Write-Debug "S3 credentials loaded from file: $S3CredentialsFile `
+        Key ID: $($env:AWS_ACCESS_KEY_ID) `
+        Key Secret: $($env:AWS_SECRET_ACCESS_KEY)"
 }
 
 if ( -Not $S3CredentialsLoaded ) {
@@ -105,8 +111,14 @@ if ( -Not ( Get-Command "terraform" ) ) {
 ## Validate input parameters
 switch ($true) {
     { $Init } {
-        Write-Information "Initializing Cloudflare module"
-        terraform -chdir="environments/cloudflare" init
+        if ( $Migrate ) {
+            Write-Information "Initializing Cloudflare module & migrating state"
+            terraform -chdir="environments/cloudflare" init -migrate-state
+        }
+        else {
+            Write-Information "Initializing Cloudflare module"
+            terraform -chdir="environments/cloudflare" init
+        }
     }
     { $Upgrade } {
         Write-Information "Upgrading Cloudflare module"
