@@ -1,10 +1,17 @@
 cloudflare/*
 proxmox/*
 backblazeB2/*
+wasabi/*
 
 !cloudflare/
 !cloudflare/example*.ps1
+!cloudflare/example*.sh
 !proxmox/
 !proxmox/example*.ps1
+!proxmox/example*.sh
 !backblazeB2/
 !backblazeB2/example*.ps1
+!backblazeB2/example*.sh
+!wasabi/
+!wasabi/example*.ps1
+!wasabi/example*.sh

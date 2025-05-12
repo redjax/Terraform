@@ -4,10 +4,18 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 5.0"
     }
+
+    ## Backblaze B2
     b2 = {
       source  = "Backblaze/b2"
       version = "~> 0.10.0"
     }
+
+    ## Wasabi
+    # wasabi = {
+    #   source  = "terrabitz/wasabi"
+    #   version = "4.1.3"
+    # }
   }
 }
 
