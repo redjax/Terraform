@@ -21,4 +21,5 @@ module "waf_zone_custom_rules" {
   waf_country_allow_ruleset_expression  = var.waf_country_allow_ruleset_expression
   waf_combined_block_ruleset_expression = var.waf_combined_block_ruleset_expression
   waf_ip_block_ruleset_expression       = var.waf_ip_block_ruleset_expression
+  waf_country_block_ruleset_expression  = var.waf_country_block_ruleset_expression
 }

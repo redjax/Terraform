@@ -33,6 +33,11 @@ variable "waf_combined_block_ruleset_expression" {
   type        = string
 }
 
+variable "waf_country_block_ruleset_expression" {
+  description = "Country BLOCK expressions to apply to WAF"
+  type        = string
+}
+
 variable "waf_ip_block_ruleset_expression" {
   description = "IP BLOCK expressions to apply to WAF"
   type        = string

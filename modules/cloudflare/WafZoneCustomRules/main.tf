@@ -17,11 +17,18 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
         ruleset = "current"
       }
     },
+    ## BLOCK country rules
+    {
+      action      = "block"
+      expression  = var.waf_country_block_ruleset_expression
+      description = "Country BLOCK rules"
+      enabled     = true
+    },
     ## BLOCK traffic rules
     {
       action      = "block"
       expression  = var.waf_combined_block_ruleset_expression
-      description = "Unified thread BLOCK rules"
+      description = "Unified threat BLOCK rules"
       enabled     = true
     },
     ## BLOCK IP rules
