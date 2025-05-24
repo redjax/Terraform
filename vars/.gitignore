@@ -4,3 +4,6 @@ cloudflare/*
 !proxmox/*example*.tfvars
 !cloudflare/*example*.tfvars
 !cloudflare/waf.tfvars
+!cloudflare/cgg/
+!cloudflare/cgg/*example*.tfvars
+!cloudflare/cgg/waf.tfvars
