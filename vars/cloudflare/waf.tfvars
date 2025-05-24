@@ -16,6 +16,7 @@ or (http.user_agent wildcard r"*censys*")
 or (http.user_agent wildcard r"*AliyunSecBot*")
 or (http.user_agent wildcard r"*facebook*")
 or (http.user_agent wildcard r"facebookexternalhit*")
+or (http.user_agent eq "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)")
 or (cf.client.bot)
 or (cf.verified_bot_category eq "Search Engine Crawler")
 or (cf.verified_bot_category eq "AI Crawler")
@@ -67,6 +68,7 @@ EOF
 ## Separate IP blocking because the ruleset gets too large
 waf_ip_block_ruleset_expression = <<-EOF
 (ip.src eq 157.66.55.118)
+or (ip.src eq 34.133.110.199)
 or (ip.src eq 5.252.155.208)
 or (ip.src eq 52.254.9.238)
 or (ip.src eq 3.231.206.170)
