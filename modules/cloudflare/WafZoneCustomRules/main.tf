@@ -8,15 +8,15 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
 
   rules = [
     ## ALLOW traffic rules
-    # {
-    #   action      = "skip"
-    #   expression  = var.waf_allow_ruleset_expression
-    #   description = "ALLOW Traffic Rules"
-    #   enabled     = true
-    #   action_parameters = {
-    #     ruleset = "current"
-    #   }
-    # },
+    {
+      action      = "skip"
+      expression  = var.waf_allow_ruleset_expression
+      description = "ALLOW Traffic Rules"
+      enabled     = true
+      action_parameters = {
+        ruleset = "current"
+      }
+    },
     ## BLOCK country rules
     {
       action      = "block"
@@ -39,15 +39,15 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
       enabled     = true
     },
     ## ALLOW traffic rules
-    {
-      action      = "skip"
-      expression  = var.waf_allow_ruleset_expression
-      description = "ALLOW Traffic Rules"
-      enabled     = true
-      action_parameters = {
-        ruleset = "current"
-      }
-    },
+    # {
+    #   action      = "skip"
+    #   expression  = var.waf_allow_ruleset_expression
+    #   description = "ALLOW Traffic Rules"
+    #   enabled     = true
+    #   action_parameters = {
+    #     ruleset = "current"
+    #   }
+    # },
   ]
 
   lifecycle {
