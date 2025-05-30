@@ -2,6 +2,14 @@
 # Cloudflare WAF Rules #
 ########################
 
+## Priority blocklist
+#  Apply BLOCK rules early on unsavory things
+waf_priority_block_ruleset_expression = <<-EOF
+(http.user_agent wildcard r"*facebook*")
+or (http.user_agent wildcard r"facebookexternalhit*")
+or (http.user_agent eq "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)")
+EOF
+
 ## Unified blocklist
 waf_combined_block_ruleset_expression = <<-EOF
 (http.user_agent wildcard r"*Expanse*")
