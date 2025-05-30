@@ -39,9 +39,11 @@ or (ip.src.country eq "CA")
 or (ip.src.country eq "CH")
 or (ip.src.country eq "CN")
 or (ip.src.country eq "DE")
+or (ip.src.country eq "FI")
 or (ip.src.country eq "FR")
 or (ip.src.country eq "GB")
 or (ip.src.country eq "HK")
+or (ip.src.country eq "HU")
 or (ip.src.country eq "IE")
 or (ip.src.country eq "ID")
 or (ip.src.country eq "IN")
@@ -159,6 +161,7 @@ or (ip.src.asnum eq 32934)
 or (ip.src.asnum eq 10557)
 or (ip.src.asnum eq 43357)
 or (ip.src.asnum eq 51167)
+or (ip.src.asnum eq 62610)
 or (ip.src.asnum eq 60068)
 or (ip.src.asnum eq 206092)
 or (ip.src.asnum eq 211298)
@@ -198,6 +201,6 @@ or (ip.src.asnum eq 36352)
 EOF
 
 ## ALLOW country codes
+# (ip.src.country eq "US")
 waf_country_allow_ruleset_expression = <<-EOF
-(ip.src.country eq "US")
 EOF
