@@ -15,7 +15,7 @@ EOF
 
 ## Unified blocklist
 waf_combined_block_ruleset_expression = <<-EOF
-(http.user_agent wildcard r"Expanse")
+(http.user_agent contains r"Expanse")
 or (http.user_agent contains "SemrushBot")
 or (http.user_agent contains "Expanse Palo Alto")
 or (http.user_agent contains "Palo Alto Networks*")
