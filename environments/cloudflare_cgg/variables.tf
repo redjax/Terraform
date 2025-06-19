@@ -42,3 +42,8 @@ variable "waf_ip_block_ruleset_expression" {
   description = "IP BLOCK expressions to apply to WAF"
   type        = string
 }
+
+variable "waf_priority_block_ruleset_expression" {
+  description = "BLOCK expressions to apply first, before any ALLOW rules"
+  type        = string
+}
