@@ -3,10 +3,14 @@ proxmox/*
 backblazeB2/*
 
 !cloudflare/
+!cloudflare/example*.sh
 !cloudflare/example*.ps1
 !cloudflare/cgg/
-!cloudflare/cgg/*.ps1
+!cloudflare/cgg/example*.sh
+!cloudflare/cgg/example*.ps1
 !proxmox/
+!proxmox/example*.sh
 !proxmox/example*.ps1
 !backblazeB2/
+!backblazeB2/example*.sh
 !backblazeB2/example*.ps1
