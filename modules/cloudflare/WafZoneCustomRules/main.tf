@@ -7,6 +7,13 @@ resource "cloudflare_ruleset" "waf_custom_rules" {
   phase       = "http_request_firewall_custom"
 
   rules = [
+    ## Priority BLOCK rules
+    {
+      action      = "block"
+      expression  = var.waf_priority_block_ruleset_expression
+      description = "Priority BLOCK rules"
+      enabled     = true
+    },
     ## ALLOW traffic rules
     {
       action      = "skip"
