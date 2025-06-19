@@ -2,6 +2,17 @@
 # Cloudflare WAF Rules #
 ########################
 
+## Priority blocklist
+#  Apply BLOCK rules early on unsavory things
+waf_priority_block_ruleset_expression = <<-EOF
+(http.user_agent contains "facebook")
+or (http.user_agent contains "facebookexternalhit")
+or (http.user_agent eq "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)")
+or (http.user_agent contains "openai.com")
+or (http.user_agent contains "gptbot")
+or (http.user_agent contains "GPTBot" and http.request.uri.path eq "/robots.txt")
+EOF
+
 ## Unified blocklist
 waf_combined_block_ruleset_expression = <<-EOF
 (http.user_agent contains "Expanse")
