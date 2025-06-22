@@ -5,6 +5,7 @@ provider "registry.terraform.io/backblaze/b2" {
   version     = "0.10.0"
   constraints = "~> 0.10.0"
   hashes = [
+    "h1:e4sWNH6KEXlb7SXKSq3DRuY9StJG6ezZYZqrzLzgO/0=",
     "h1:sRzbt/unwOqT/uOfKMgHt4+mQnz6fZIWwkO4ix14hPk=",
     "zh:03d4ec22a8a47dfc4e1beccd261f37b22113646d246853195fe5d8cb6febf90c",
     "zh:08c9ea953b3dcb01aeebd372b9bd2c1a6c1f0b996125bde03c094bc5e75fb55b",
@@ -19,6 +20,7 @@ provider "registry.terraform.io/cloudflare/cloudflare" {
   constraints = "~> 5.0"
   hashes = [
     "h1:FAQS7p1dH8ux8oYpXv0/ywLPU01ngB8f6fjz+3eVcOc=",
+    "h1:TEXKKaRkcSnbidtu+HemZWPznJCetYNTpAvZ5vUbIZ0=",
     "zh:2f7b526dc7bdea594214b7428bf02a80643a0b53258d4981c747dae6dcfe2b57",
     "zh:b96462bf725e12d7e497f2166948aa7cce864a399b8625a791137eef63eb6b24",
     "zh:bd77b9b3ab4470e410a1c055cff279db44c8b7764721d9cbb8f1c0297ababa67",
