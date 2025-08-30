@@ -12,7 +12,7 @@ Options:
   --s3-credentials-file <file>  Path to S3 storage provider credentials (default: .secrets/backblazeB2/b2.secrets.sh)
   --auto-approve                Automatically approve Terraform apply actions
   --tfvars-file <file>          Path to a tfvars file (default: waf.tfvars)
-  --secrets-file <file>         Path to a secrets.tfvars file (default: waf.secrets.tfvars)
+  --secrets-file <file>         Path to a secrets.tfvars file (default: .secrets/cloudflare/waf.secrets.tfvars)
   --plan                        Run 'terraform plan' instead of 'apply'
   --validate                    Run 'terraform validate'
   --upgrade                     Run 'terraform init -upgrade' on the module
@@ -28,7 +28,7 @@ EOF
 }
 
 # Default values
-S3_CREDENTIALS_FILE=".secrets/backblazeB2/b2.secrets.sh"
+S3_CREDENTIALS_FILE="${PWD}/.secrets/backblazeB2/b2.secrets.sh"
 AUTO_APPROVE=0
 TFVARS_FILE="waf.tfvars"
 SECRETS_FILE="waf.secrets.tfvars"
@@ -88,10 +88,10 @@ if [[ $S3_CREDENTIALS_LOADED -eq 0 ]]; then
 fi
 
 # Set paths
-MODULES_ROOT="modules"
-ENVIRONMENTS_ROOT="environments"
-VARS_ROOT="vars"
-SECRETS_ROOT=".secrets"
+MODULES_ROOT="${PWD}/modules"
+ENVIRONMENTS_ROOT="${PWD}/environments"
+VARS_ROOT="${PWD}/vars"
+SECRETS_ROOT="${PWD}/.secrets"
 
 MODULE_PATH="$MODULES_ROOT/cloudflare/WafZoneCustomRules"
 ENVIRONMENT_PATH="$ENVIRONMENTS_ROOT/cloudflare"
