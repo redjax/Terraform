@@ -1,6 +1,8 @@
 proxmox/*
 
 cloudflare/*
+github/*
+github/repos/*
 
 !proxmox/*example*.tfvars
 
@@ -10,3 +12,8 @@ cloudflare/*
 !cloudflare/cgg/
 !cloudflare/cgg/*example*.tfvars
 !cloudflare/cgg/waf.tfvars
+
+!github/
+!github/repos/
+!github/repos/*example*.tfvars
+!github/repos/tftestrepo.tfvars
