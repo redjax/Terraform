@@ -3,14 +3,13 @@ proxmox/*
 backblazeB2/*
 
 !cloudflare/
-!cloudflare/example*.sh
-!cloudflare/example*.ps1
+!cloudflare/example*.tfvars
+
 !cloudflare/cgg/
-!cloudflare/cgg/example*.sh
-!cloudflare/cgg/example*.ps1
+!cloudflare/cgg/example*.tfvars
+
 !proxmox/
-!proxmox/example*.sh
-!proxmox/example*.ps1
+!proxmox/example*.tfvars
+
 !backblazeB2/
-!backblazeB2/example*.sh
-!backblazeB2/example*.ps1
+!backblazeB2/example*.tfvars
