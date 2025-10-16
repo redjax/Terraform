@@ -74,3 +74,25 @@ variable "additional_branches" {
   description = "Additional branches to create."
   default     = []
 }
+
+## Name of repository owner
+variable "github_owner" {
+  type        = string
+  description = "Github username who will own the new repository."
+  nullable    = false
+}
+
+## Github PAT
+variable "github_token" {
+  type        = string
+  description = "Github PAT to use for API calls. Must have permissions equivalent to module actions."
+  nullable    = false
+  sensitive   = true
+}
+
+## Create repo with a default README & initial commit
+variable "repository_auto_init" {
+  type        = bool
+  description = "Initialize new repository. Required for creating branches."
+  default     = false
+}

@@ -1,1 +1,2 @@
-GITHUB_TOKEN = "<Your Github PAT>"
+github_owner = "githubUsername"
+github_token = "github_pat_..."

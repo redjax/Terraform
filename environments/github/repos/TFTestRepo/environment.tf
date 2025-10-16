@@ -18,6 +18,9 @@ module "gh_repo" {
   repository_name        = var.repository_name
   repository_description = var.repository_description
   repository_visibility  = var.repository_visibility
+  repository_auto_init   = var.repository_auto_init
   default_branch         = var.default_branch
   additional_branches    = var.additional_branches
+  github_owner           = var.github_owner
+  github_token           = var.github_token
 }

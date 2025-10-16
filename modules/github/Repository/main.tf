@@ -3,6 +3,7 @@ resource "github_repository" "main" {
   name        = var.repository_name
   description = var.repository_description
   visibility  = var.repository_visibility
+  auto_init   = var.repository_auto_init
 }
 
 ## Create branch
