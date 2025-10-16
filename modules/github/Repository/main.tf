@@ -7,16 +7,11 @@ resource "github_repository" "main" {
 }
 
 ## Create branch
-resource "github_branch" "main" {
-  repository = github_repository.main.name
-  branch     = var.default_branch
-}
-
-## Set default branch
-resource "github_branch_default" "default" {
-  repository = github_repository.main.name
-  branch     = var.default_branch
-}
+#  If you do this, the 'terraform destroy' command stops working
+# resource "github_branch" "main" {
+#   repository = github_repository.main.name
+#   branch     = "main"
+# }
 
 ## Create additional branches
 resource "github_branch" "additional" {

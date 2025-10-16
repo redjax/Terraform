@@ -61,13 +61,6 @@ variable "repository_visibility" {
   }
 }
 
-## Default branch
-variable "default_branch" {
-  type        = string
-  description = "Name of branch to create in repository."
-  default     = "main"
-}
-
 ## Additional branches to create
 variable "additional_branches" {
   type        = list(string)
