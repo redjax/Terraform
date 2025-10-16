@@ -8,3 +8,5 @@ github/*
 !proxmox/
 !backblazeB2/
 !github/
+
+!*example*.tfvars
