@@ -21,6 +21,7 @@ Options:
   --upgrade                     Run 'terraform init -upgrade' on the module
   --init                        Run 'terraform init' on the environment
   --migrate                     Use with --init to migrate state
+  --destroy                     Destroy Terraform-managed resource
   -h, --help                    Show this help message and exit
 
 Examples:
@@ -35,6 +36,7 @@ S3_CREDENTIALS_FILE="${REPO_ROOT}/.secrets/backblazeB2/b2.secrets.sh"
 AUTO_APPROVE=0
 TFVARS_FILE="tftestrepo.tfvars"
 SECRETS_FILE="secrets.tfvars"
+DESTROY=0
 PLAN=0
 VALIDATE=0
 UPGRADE=0
@@ -95,6 +97,10 @@ while [[ $# -gt 0 ]]; do
         ;;
     --migrate)
         MIGRATE=1
+        shift
+        ;;
+    --destroy)
+        DESTROY=1
         shift
         ;;
     -h | --help)
@@ -186,6 +192,14 @@ elif [[ $VALIDATE -eq 1 ]]; then
 elif [[ $PLAN -eq 1 ]]; then
     echo "Planning Github repository"
     terraform -chdir="$ENVIRONMENT_PATH" plan -var-file="$VARS_PATH" -var-file="$SECRETS_PATH"
+elif [[ $DESTROY -eq 1 ]]; then
+    echo "Destroying Github repository"
+    CMD=(terraform -chdir="$ENVIRONMENT_PATH" destroy -var-file="$VARS_PATH" -var-file="$SECRETS_PATH")
+    if [[ $AUTO_APPROVE -eq 1 ]]; then
+        CMD+=("-auto-approve")
+    fi
+    "${CMD[@]}"
+    echo "Destroyed Github repository"
 else
     echo "Applying Github repository"
     CMD=(terraform -chdir="$ENVIRONMENT_PATH" apply -var-file="$VARS_PATH" -var-file="$SECRETS_PATH")
