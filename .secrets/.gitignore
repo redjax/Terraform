@@ -1,15 +1,10 @@
 cloudflare/*
 proxmox/*
 backblazeB2/*
+github/*
 
 !cloudflare/
-!cloudflare/example*.tfvars
-
 !cloudflare/cgg/
-!cloudflare/cgg/example*.tfvars
-
 !proxmox/
-!proxmox/example*.tfvars
-
 !backblazeB2/
-!backblazeB2/example*.tfvars
+!github/
