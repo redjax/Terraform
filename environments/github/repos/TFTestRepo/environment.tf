@@ -12,14 +12,15 @@ terraform {
   }
 }
 
-module "gh_repo" {
-  source = "../../../../modules/github/Repository"
+## Managed by Terragrunt
+# module "gh_repo" {
+#   source = "../../../../modules/github/Repository/"
 
-  repository_name        = var.repository_name
-  repository_description = var.repository_description
-  repository_visibility  = var.repository_visibility
-  repository_auto_init   = var.repository_auto_init
-  additional_branches    = var.additional_branches
-  github_owner           = var.github_owner
-  github_token           = var.github_token
-}
+#   repository_name        = var.repository_name
+#   repository_description = var.repository_description
+#   repository_visibility  = var.repository_visibility
+#   repository_auto_init   = var.repository_auto_init
+#   additional_branches    = var.additional_branches
+#   github_owner           = var.github_owner
+#   github_token           = var.github_token
+# }
