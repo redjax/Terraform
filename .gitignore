@@ -9,3 +9,5 @@
 !.secrets/.gitignore
 
 !varsfiles/*.tfvars
+
+.terragrunt-cache
