@@ -56,20 +56,12 @@ jobs:
           tofu_version: latest
           tofu_wrapper: false
 
-      - name: Install latest Terragrunt
-        run: |
-          set -euo pipefail
+      - name: Set up Terragrunt
+        uses: gruntwork-io/terragrunt-action@v3
+        with:
+          tg_actions_version: latest
 
-          LATEST_VERSION=$(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq -r .tag_name)
-          
-          echo "Installing Terragrunt ${LATEST_VERSION}"
-          curl -sL "https://github.com/gruntwork-io/terragrunt/releases/download/${LATEST_VERSION}/terragrunt_linux_amd64" -o /usr/local/bin/terragrunt
-          
-          chmod +x /usr/local/bin/terragrunt
-          
-          terragrunt -v
-
-      - name: Set TF variable environment
+      - name: Set Terraform environment variables
         run: |
           echo "TF_VAR_repository_name=\"${{ github.event.inputs.repo-name }}\"" >> $GITHUB_ENV
           echo "TF_VAR_repository_description=\"${{ github.event.inputs.repo-description }}\"" >> $GITHUB_ENV
@@ -79,19 +71,19 @@ jobs:
           echo "TF_VAR_github_token=${{ secrets.GH_PAT }}" >> $GITHUB_ENV
           echo "TF_VAR_visibility=${{ github.event.inputs.visibility }}" >> $GITHUB_ENV
 
-      - name: Configure AWS Credentials for Backblaze B2
+      - name: Configure AWS credentials for Backblaze B2
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.B2_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.B2_SECRET_ACCESS_KEY }}
-          aws-region: us-west-002
+          aws-region: us-east-1
 
-      - name: Set Checksum Env Vars
+      - name: Set checksum environment variables
         run: |
           echo "AWS_REQUEST_CHECKSUM_CALCULATION=when_required" >> $GITHUB_ENV
           echo "AWS_RESPONSE_CHECKSUM_VALIDATION=when_required" >> $GITHUB_ENV
 
-      - name: Terragrunt Plan (Apply or Destroy)
+      - name: Terragrunt plan (apply or destroy)
         working-directory: ./environments/github/repos/BasicRepository
         run: |
           if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
@@ -107,7 +99,6 @@ jobs:
     needs: plan
     environment:
       name: github_repo_deployment
-      url: ${{ github.server_url }}/repos/${{ github.repository }}/environments/github_repo_deployment
 
     steps:
       - uses: actions/checkout@v5
@@ -118,35 +109,34 @@ jobs:
           tofu_version: latest
           tofu_wrapper: false
 
-      - name: Install latest Terragrunt
-        run: |
-          LATEST_VERSION=$(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq -r .tag_name)
-          curl -sL "https://github.com/gruntwork-io/terragrunt/releases/download/${LATEST_VERSION}/terragrunt_linux_amd64" -o /usr/local/bin/terragrunt
-          chmod +x /usr/local/bin/terragrunt
+      - name: Set up Terragrunt
+        uses: gruntwork-io/terragrunt-action@v3
+        with:
+          tg_actions_version: latest
 
-      - name: Set TF variable environment
+      - name: Set Terraform environment variables
         run: |
           echo "TF_VAR_repository_name=\"${{ github.event.inputs.repo-name }}\"" >> $GITHUB_ENV
           echo "TF_VAR_repository_description=\"${{ github.event.inputs.repo-description }}\"" >> $GITHUB_ENV
           echo "TF_VAR_repository_auto_init=${{ github.event.inputs.auto-init }}" >> $GITHUB_ENV
           echo "TF_VAR_additional_branches='${{ github.event.inputs.additional-branches }}'" >> $GITHUB_ENV
           echo "TF_VAR_github_owner=${{ github.event.inputs.github-owner }}" >> $GITHUB_ENV
-          echo "TF_VAR_github_token=${{ secrets.GITHUB_PAT }}" >> $GITHUB_ENV
+          echo "TF_VAR_github_token=${{ secrets.GH_PAT }}" >> $GITHUB_ENV
           echo "TF_VAR_visibility=${{ github.event.inputs.visibility }}" >> $GITHUB_ENV
 
-      - name: Configure AWS Credentials for Backblaze B2
+      - name: Configure AWS credentials for Backblaze B2
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.B2_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.B2_SECRET_ACCESS_KEY }}
-          aws-region: us-west-002
+          aws-region: us-east-1
 
-      - name: Set Checksum Env Vars
+      - name: Set checksum environment variables
         run: |
           echo "AWS_REQUEST_CHECKSUM_CALCULATION=when_required" >> $GITHUB_ENV
           echo "AWS_RESPONSE_CHECKSUM_VALIDATION=when_required" >> $GITHUB_ENV
 
-      - name: Apply or Destroy Terragrunt
+      - name: Terragrunt apply or destroy
         working-directory: ./environments/github/repos/BasicRepository
         run: |
           if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
