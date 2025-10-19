@@ -59,7 +59,7 @@ jobs:
       - name: Set up Terragrunt
         uses: gruntwork-io/terragrunt-action@v3
         with:
-          tg_actions_version: latest
+          tg_version: latest
 
       - name: Set Terraform environment variables
         run: |
@@ -112,7 +112,7 @@ jobs:
       - name: Set up Terragrunt
         uses: gruntwork-io/terragrunt-action@v3
         with:
-          tg_actions_version: latest
+          tg_version: latest
 
       - name: Set Terraform environment variables
         run: |
