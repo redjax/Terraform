@@ -55,14 +55,11 @@ jobs:
         with:
           tg_version: latest
           tofu_version: latest
-          tg_dir: ./environments/github/repos/BasicRepository
+          tg_dir: environments/github/repos/BasicRepository
           tg_command: |
-            if [ "${{ github.event.inputs.destroy }}" = "true" ]; then
-              terragrunt plan -destroy
-            else
-              terragrunt plan
-            fi
+            terragrunt run -- sh -c 'if [ "${{ github.event.inputs.destroy }}" = "true" ]; then terragrunt plan -destroy; else terragrunt plan; fi'
         env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_SECRET_ACCESS_KEY }}
           AWS_REQUEST_CHECKSUM_CALCULATION: when_required
@@ -90,12 +87,9 @@ jobs:
           tofu_version: latest
           tg_dir: ./environments/github/repos/BasicRepository
           tg_command: |
-            if [ "${{ github.event.inputs.destroy }}" = "true" ]; then
-              terragrunt destroy -auto-approve
-            else
-              terragrunt apply -auto-approve
-            fi
+            terragrunt run -- sh -c 'if [ "${{ github.event.inputs.destroy }}" = "true" ]; then terragrunt destroy -auto-approve; else terragrunt apply -auto-approve; fi'
         env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_SECRET_ACCESS_KEY }}
           AWS_REQUEST_CHECKSUM_CALCULATION: when_required
