@@ -83,8 +83,8 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_SECRET_ACCESS_KEY }}
-          AWS_REQUEST_CHECKSUM_CALCULATION: ${{ AWS_REQUEST_CHECKSUM_CALCULATION }}
-          AWS_RESPONSE_CHECKSUM_VALIDATION: ${{ AWS_RESPONSE_CHECKSUM_VALIDATION }}
+          AWS_REQUEST_CHECKSUM_CALCULATION: ${{ secrets.AWS_REQUEST_CHECKSUM_CALCULATION }}
+          AWS_RESPONSE_CHECKSUM_VALIDATION: ${{ secrets.AWS_RESPONSE_CHECKSUM_VALIDATION }}
         run: |
           echo "Terraform backend credentials configured."
 
@@ -135,8 +135,8 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_SECRET_ACCESS_KEY }}
-          AWS_REQUEST_CHECKSUM_CALCULATION: ${{ AWS_REQUEST_CHECKSUM_CALCULATION }}
-          AWS_RESPONSE_CHECKSUM_VALIDATION: ${{ AWS_RESPONSE_CHECKSUM_VALIDATION }}
+          AWS_REQUEST_CHECKSUM_CALCULATION: ${{ secrets.AWS_REQUEST_CHECKSUM_CALCULATION }}
+          AWS_RESPONSE_CHECKSUM_VALIDATION: ${{ secrets.AWS_RESPONSE_CHECKSUM_VALIDATION }}
         run: |
           echo "Terraform backend credentials configured."
 
