@@ -83,8 +83,9 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_SECRET_ACCESS_KEY }}
-          AWS_REQUEST_CHECKSUM_CALCULATION: ${{ secrets.AWS_REQUEST_CHECKSUM_CALCULATION }}
-          AWS_RESPONSE_CHECKSUM_VALIDATION: ${{ secrets.AWS_RESPONSE_CHECKSUM_VALIDATION }}
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+
         run: |
           echo "Terraform backend credentials configured."
 
@@ -92,10 +93,10 @@ jobs:
         working-directory: ./environments/github/repos/BasicRepository
         run: |
           if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
-            echo "Running destroy plan..."
+            echo "Running destroy plan"
             terragrunt plan -destroy
           else
-            echo "Running standard plan..."
+            echo "Running standard plan"
             terragrunt plan
           fi
 
@@ -135,8 +136,8 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_SECRET_ACCESS_KEY }}
-          AWS_REQUEST_CHECKSUM_CALCULATION: ${{ secrets.AWS_REQUEST_CHECKSUM_CALCULATION }}
-          AWS_RESPONSE_CHECKSUM_VALIDATION: ${{ secrets.AWS_RESPONSE_CHECKSUM_VALIDATION }}
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
         run: |
           echo "Terraform backend credentials configured."
 
