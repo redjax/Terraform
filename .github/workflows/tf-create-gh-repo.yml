@@ -46,7 +46,7 @@ jobs:
   terragrunt-deploy:
     runs-on: ubuntu-latest
     environment:
-      name: deployment
+      name: github_repo_deployment
       url: ${{ github.server_url }}/repos/${{ github.repository }}/environments/github_repo_deployment
 
     steps:
