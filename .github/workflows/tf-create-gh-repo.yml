@@ -1,4 +1,3 @@
----
 name: Manage GitHub Repository
 
 on:
@@ -46,18 +45,39 @@ jobs:
   plan:
     runs-on: ubuntu-latest
     environment: github_repo_plan
-
     steps:
       - uses: actions/checkout@v5
 
-      - name: Terragrunt Plan
+      - name: Terragrunt Plan for destroy
+        if: ${{ github.event.inputs.destroy == 'true' }}
         uses: gruntwork-io/terragrunt-action@v3
         with:
           tg_version: latest
           tofu_version: latest
           tg_dir: environments/github/repos/BasicRepository
-          tg_command: |
-            terragrunt run -- sh -c 'if [ "${{ github.event.inputs.destroy }}" = "true" ]; then terragrunt plan -destroy; else terragrunt plan; fi'
+          tg_command: plan -destroy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_SECRET_ACCESS_KEY }}
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          TF_VAR_repository_name: ${{ github.event.inputs.repo-name }}
+          TF_VAR_repository_description: ${{ github.event.inputs.repo-description }}
+          TF_VAR_repository_auto_init: ${{ github.event.inputs.auto-init }}
+          TF_VAR_additional_branches: ${{ github.event.inputs.additional-branches }}
+          TF_VAR_github_owner: ${{ github.event.inputs.github-owner }}
+          TF_VAR_github_token: ${{ secrets.GH_PAT }}
+          TF_VAR_visibility: ${{ github.event.inputs.visibility }}
+
+      - name: Terragrunt Plan for deploy
+        if: ${{ github.event.inputs.destroy != 'true' }}
+        uses: gruntwork-io/terragrunt-action@v3
+        with:
+          tg_version: latest
+          tofu_version: latest
+          tg_dir: environments/github/repos/BasicRepository
+          tg_command: plan
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
@@ -76,18 +96,39 @@ jobs:
     runs-on: ubuntu-latest
     needs: plan
     environment: github_repo_deployment
-
     steps:
       - uses: actions/checkout@v5
 
-      - name: Terragrunt Apply or Destroy
+      - name: Terragrunt Destroy
+        if: ${{ github.event.inputs.destroy == 'true' }}
         uses: gruntwork-io/terragrunt-action@v3
         with:
           tg_version: latest
           tofu_version: latest
-          tg_dir: ./environments/github/repos/BasicRepository
-          tg_command: |
-            terragrunt run -- sh -c 'if [ "${{ github.event.inputs.destroy }}" = "true" ]; then terragrunt destroy -auto-approve; else terragrunt apply -auto-approve; fi'
+          tg_dir: environments/github/repos/BasicRepository
+          tg_command: destroy -auto-approve
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_SECRET_ACCESS_KEY }}
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          TF_VAR_repository_name: ${{ github.event.inputs.repo-name }}
+          TF_VAR_repository_description: ${{ github.event.inputs.repo-description }}
+          TF_VAR_repository_auto_init: ${{ github.event.inputs.auto-init }}
+          TF_VAR_additional_branches: ${{ github.event.inputs.additional-branches }}
+          TF_VAR_github_owner: ${{ github.event.inputs.github-owner }}
+          TF_VAR_github_token: ${{ secrets.GH_PAT }}
+          TF_VAR_visibility: ${{ github.event.inputs.visibility }}
+
+      - name: Terragrunt Apply
+        if: ${{ github.event.inputs.destroy != 'true' }}
+        uses: gruntwork-io/terragrunt-action@v3
+        with:
+          tg_version: latest
+          tofu_version: latest
+          tg_dir: environments/github/repos/BasicRepository
+          tg_command: apply -auto-approve
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
