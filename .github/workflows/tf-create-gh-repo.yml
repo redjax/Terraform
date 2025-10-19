@@ -16,7 +16,7 @@ on:
       auto-init:
         description: 'Auto initialize repository with README and main branch'
         required: false
-        default: false
+        default: true
         type: boolean
       additional-branches:
         description: 'Optional branches list (e.g., ''["dev","docs"]'')'
