@@ -50,97 +50,60 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Set up OpenTofu
-        uses: opentofu/setup-opentofu@v1
-        with:
-          tofu_version: latest
-          tofu_wrapper: false
-
-      - name: Set up Terragrunt
+      - name: Terragrunt Plan
         uses: gruntwork-io/terragrunt-action@v3
         with:
           tg_version: latest
-
-      - name: Set Terraform environment variables
-        run: |
-          echo "TF_VAR_repository_name=\"${{ github.event.inputs.repo-name }}\"" >> $GITHUB_ENV
-          echo "TF_VAR_repository_description=\"${{ github.event.inputs.repo-description }}\"" >> $GITHUB_ENV
-          echo "TF_VAR_repository_auto_init=${{ github.event.inputs.auto-init }}" >> $GITHUB_ENV
-          echo "TF_VAR_additional_branches='${{ github.event.inputs.additional-branches }}'" >> $GITHUB_ENV
-          echo "TF_VAR_github_owner=${{ github.event.inputs.github-owner }}" >> $GITHUB_ENV
-          echo "TF_VAR_github_token=${{ secrets.GH_PAT }}" >> $GITHUB_ENV
-          echo "TF_VAR_visibility=${{ github.event.inputs.visibility }}" >> $GITHUB_ENV
-
-      - name: Configure AWS credentials for Backblaze B2
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.B2_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.B2_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Set checksum environment variables
-        run: |
-          echo "AWS_REQUEST_CHECKSUM_CALCULATION=when_required" >> $GITHUB_ENV
-          echo "AWS_RESPONSE_CHECKSUM_VALIDATION=when_required" >> $GITHUB_ENV
-
-      - name: Terragrunt plan (apply or destroy)
-        working-directory: ./environments/github/repos/BasicRepository
-        run: |
-          if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
-            echo "Running destroy plan"
-            terragrunt plan -destroy
-          else
-            echo "Running standard plan"
-            terragrunt plan
-          fi
+          tofu_version: latest
+          tg_dir: ./environments/github/repos/BasicRepository
+          tg_command: |
+            if [ "${{ github.event.inputs.destroy }}" = "true" ]; then
+              terragrunt plan -destroy
+            else
+              terragrunt plan
+            fi
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_SECRET_ACCESS_KEY }}
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          TF_VAR_repository_name: ${{ github.event.inputs.repo-name }}
+          TF_VAR_repository_description: ${{ github.event.inputs.repo-description }}
+          TF_VAR_repository_auto_init: ${{ github.event.inputs.auto-init }}
+          TF_VAR_additional_branches: ${{ github.event.inputs.additional-branches }}
+          TF_VAR_github_owner: ${{ github.event.inputs.github-owner }}
+          TF_VAR_github_token: ${{ secrets.GH_PAT }}
+          TF_VAR_visibility: ${{ github.event.inputs.visibility }}
 
   apply:
     runs-on: ubuntu-latest
     needs: plan
-    environment:
-      name: github_repo_deployment
+    environment: github_repo_deployment
 
     steps:
       - uses: actions/checkout@v5
 
-      - name: Set up OpenTofu
-        uses: opentofu/setup-opentofu@v1
-        with:
-          tofu_version: latest
-          tofu_wrapper: false
-
-      - name: Set up Terragrunt
+      - name: Terragrunt Apply or Destroy
         uses: gruntwork-io/terragrunt-action@v3
         with:
           tg_version: latest
-
-      - name: Set Terraform environment variables
-        run: |
-          echo "TF_VAR_repository_name=\"${{ github.event.inputs.repo-name }}\"" >> $GITHUB_ENV
-          echo "TF_VAR_repository_description=\"${{ github.event.inputs.repo-description }}\"" >> $GITHUB_ENV
-          echo "TF_VAR_repository_auto_init=${{ github.event.inputs.auto-init }}" >> $GITHUB_ENV
-          echo "TF_VAR_additional_branches='${{ github.event.inputs.additional-branches }}'" >> $GITHUB_ENV
-          echo "TF_VAR_github_owner=${{ github.event.inputs.github-owner }}" >> $GITHUB_ENV
-          echo "TF_VAR_github_token=${{ secrets.GH_PAT }}" >> $GITHUB_ENV
-          echo "TF_VAR_visibility=${{ github.event.inputs.visibility }}" >> $GITHUB_ENV
-
-      - name: Configure AWS credentials for Backblaze B2
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.B2_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.B2_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Set checksum environment variables
-        run: |
-          echo "AWS_REQUEST_CHECKSUM_CALCULATION=when_required" >> $GITHUB_ENV
-          echo "AWS_RESPONSE_CHECKSUM_VALIDATION=when_required" >> $GITHUB_ENV
-
-      - name: Terragrunt apply or destroy
-        working-directory: ./environments/github/repos/BasicRepository
-        run: |
-          if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
-            terragrunt destroy -auto-approve
-          else
-            terragrunt apply -auto-approve
-          fi
+          tofu_version: latest
+          tg_dir: ./environments/github/repos/BasicRepository
+          tg_command: |
+            if [ "${{ github.event.inputs.destroy }}" = "true" ]; then
+              terragrunt destroy -auto-approve
+            else
+              terragrunt apply -auto-approve
+            fi
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.B2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.B2_SECRET_ACCESS_KEY }}
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          TF_VAR_repository_name: ${{ github.event.inputs.repo-name }}
+          TF_VAR_repository_description: ${{ github.event.inputs.repo-description }}
+          TF_VAR_repository_auto_init: ${{ github.event.inputs.auto-init }}
+          TF_VAR_additional_branches: ${{ github.event.inputs.additional-branches }}
+          TF_VAR_github_owner: ${{ github.event.inputs.github-owner }}
+          TF_VAR_github_token: ${{ secrets.GH_PAT }}
+          TF_VAR_visibility: ${{ github.event.inputs.visibility }}
