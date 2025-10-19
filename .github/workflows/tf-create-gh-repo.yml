@@ -1,5 +1,4 @@
----
-name: Create New Github Repo
+name: Manage GitHub Repository
 
 on:
   workflow_dispatch:
@@ -11,25 +10,25 @@ on:
       repo-description:
         description: 'Repository description'
         required: false
-        default: 'Repository was provisioned by terragrunt Github Action without specifying a description.'
+        default: 'This repository was provisioned with Terraform without a description.'
         type: string
       auto-init:
-        description: 'Auto initialize repo. Provisions repository with a "main" branch (and optional additional branches) and a README.md.'
+        description: 'Auto initialize repository with README and main branch'
         required: false
         default: false
         type: boolean
       additional-branches:
-        description: 'Additional branches as string (e.g. "["branch1","branch2"]")'
+        description: 'Optional branches list (e.g., ''["dev","docs"]'')'
         required: false
         default: ''
         type: string
       github-owner:
-        description: 'GitHub owner/org'
+        description: 'GitHub organization or user'
         required: false
-        default: 'default-owner'
+        default: 'redjax'
         type: string
       visibility:
-        description: 'Repository visibility'
+        description: 'Public or private visibility'
         required: false
         default: 'private'
         type: choice
@@ -37,21 +36,18 @@ on:
           - private
           - public
       destroy:
-        description: 'Destroy repository, if it was created by this Terraform module.'
+        description: 'Perform destroy instead of deploy'
         required: false
         default: false
         type: boolean
 
 jobs:
-  terragrunt-deploy:
+  plan:
     runs-on: ubuntu-latest
-    environment:
-      name: github_repo_deployment
-      url: ${{ github.server_url }}/repos/${{ github.repository }}/environments/github_repo_deployment
+    environment: github_repo_plan
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
       - name: Set up OpenTofu
         uses: opentofu/setup-opentofu@v1
@@ -59,14 +55,10 @@ jobs:
           tofu_version: latest
           tofu_wrapper: false
 
-      - name: Verify OpenTofu installation
-        run: tofu version
-
       - name: Install latest Terragrunt
         run: |
           set -euo pipefail
 
-          ## Get latest version string from Github
           LATEST_VERSION=$(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq -r .tag_name)
           
           echo "Installing Terragrunt ${LATEST_VERSION}"
@@ -75,8 +67,51 @@ jobs:
           chmod +x /usr/local/bin/terragrunt
           
           terragrunt -v
-      
-      - name: Set Terragrunt environment variables
+
+      - name: Set TF variable environment
+        run: |
+          echo "TF_VAR_repository_name=\"${{ github.event.inputs.repo-name }}\"" >> $GITHUB_ENV
+          echo "TF_VAR_repository_description=\"${{ github.event.inputs.repo-description }}\"" >> $GITHUB_ENV
+          echo "TF_VAR_repository_auto_init=${{ github.event.inputs.auto-init }}" >> $GITHUB_ENV
+          echo "TF_VAR_additional_branches='${{ github.event.inputs.additional-branches }}'" >> $GITHUB_ENV
+          echo "TF_VAR_github_owner=${{ github.event.inputs.github-owner }}" >> $GITHUB_ENV
+          echo "TF_VAR_github_token=${{ secrets.GH_PAT }}" >> $GITHUB_ENV
+          echo "TF_VAR_visibility=${{ github.event.inputs.visibility }}" >> $GITHUB_ENV
+
+      - name: Terragrunt Plan (Apply or Destroy)
+        working-directory: ./environments/github/repos/BasicRepository
+        run: |
+          if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
+            echo "Running destroy plan..."
+            terragrunt plan -destroy
+          else
+            echo "Running standard plan..."
+            terragrunt plan
+          fi
+
+  apply:
+    runs-on: ubuntu-latest
+    needs: plan
+    environment:
+      name: github_repo_deployment
+      url: ${{ github.server_url }}/repos/${{ github.repository }}/environments/github_repo_deployment
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: latest
+          tofu_wrapper: false
+
+      - name: Install latest Terragrunt
+        run: |
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq -r .tag_name)
+          curl -sL "https://github.com/gruntwork-io/terragrunt/releases/download/${LATEST_VERSION}/terragrunt_linux_amd64" -o /usr/local/bin/terragrunt
+          chmod +x /usr/local/bin/terragrunt
+
+      - name: Set TF variable environment
         run: |
           echo "TF_VAR_repository_name=\"${{ github.event.inputs.repo-name }}\"" >> $GITHUB_ENV
           echo "TF_VAR_repository_description=\"${{ github.event.inputs.repo-description }}\"" >> $GITHUB_ENV
@@ -86,21 +121,11 @@ jobs:
           echo "TF_VAR_github_token=${{ secrets.GITHUB_PAT }}" >> $GITHUB_ENV
           echo "TF_VAR_visibility=${{ github.event.inputs.visibility }}" >> $GITHUB_ENV
 
-      - name: Plan Terragrunt deployment
+      - name: Apply or Destroy Terragrunt
         working-directory: ./environments/github/repos/BasicRepository
-        run: terragrunt plan
-
-      - name: Await manual approval before apply
-        ## Requires environment protection rules manual approval
-        if: github.event.inputs.destroy == 'false'
-        run: echo "Awaiting manual approval to apply deployment"
-
-      - name: Provision Github repository with Terragrunt
-        if: github.event.inputs.destroy == 'false'
-        working-directory: ./environments/github/repos/BasicRepository
-        run: terragrunt apply -auto-approve
-        
-      - name: Destroy Github repository deployed with Terragrunt
-        if: github.event.inputs.destroy == 'true'
-        working-directory: ./environments/github/repos/BasicRepository
-        run: terragrunt destroy -auto-approve
+        run: |
+          if [ "${{ github.event.inputs.destroy }}" == "true" ]; then
+            terragrunt destroy -auto-approve
+          else
+            terragrunt apply -auto-approve
+          fi
