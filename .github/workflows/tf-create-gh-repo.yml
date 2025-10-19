@@ -1,84 +1,97 @@
+---
 name: Create New Github Repo
 
 on:
   workflow_dispatch:
+    inputs:
+      repo-name:
+        description: 'Repository name'
+        required: true
+        type: string
+      repo-description:
+        description: 'Repository description'
+        required: false
+        default: 'Repository was provisioned by terragrunt Github Action without specifying a description.'
+        type: string
+      auto-init:
+        description: 'Auto initialize repo. Provisions repository with a "main" branch (and optional additional branches) and a README.md.'
+        required: false
+        default: false
+        type: boolean
+      additional-branches:
+        description: 'Additional branches as string (e.g. "["branch1","branch2"]")'
+        required: false
+        default: ''
+        type: string
+      github-owner:
+        description: 'GitHub owner/org'
+        required: false
+        default: 'default-owner'
+        type: string
+      visibility:
+        description: 'Repository visibility'
+        required: false
+        default: 'private'
+        type: choice
+        options:
+          - private
+          - public
+      destroy:
+        description: 'Destroy repository, if it was created by this Terraform module.'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
-  plan:
+  terragrunt-deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: environments/github/repos/BasicRepository
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Set up direnv environment
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y direnv
-        eval "$(direnv hook bash)"
-        direnv allow .
-
-    - name: Terragrunt plan
-      uses: gruntwork-io/terragrunt-action@v2
-      with:
-        tg_version: latest
-        tg_dir: environments/github/repos/BasicRepository
-        tg_command: plan
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REQUEST_CHECKSUM_CALCULATION: ${{ secrets.AWS_REQUEST_CHECKSUM_CALCULATION }}
-        AWS_RESPONSE_CHECKSUM_VALIDATION: ${{ secrets.AWS_RESPONSE_CHECKSUM_VALIDATION }}
-
-        TF_VAR_repository_name: ${{ secrets.REPOSITORY_NAME }}
-        TF_VAR_repository_auto_init: ${{ secrets.REPOSITORY_AUTO_INIT }}
-        TF_VAR_additional_branches: ${{ secrets.ADDITIONAL_BRANCHES }}
-        TF_VAR_github_owner: ${{ secrets.GITHUB_OWNER }}
-        TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload plan artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: basicrepo-plan
-        path: .
-
-  apply:
-    runs-on: ubuntu-latest
-    needs: plan
     environment:
-      name: production
-
-    defaults:
-      run:
-        working-directory: environments/github/repos/BasicRepository
+      name: deployment
+      url: ${{ github.server_url }}/repos/${{ github.repository }}/environments/github_repo_deployment
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v5
 
-    - name: Set up direnv environment
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y direnv
-        eval "$(direnv hook bash)"
-        direnv allow .
+      - name: Install latest Terragrunt
+        run: |
+          set -euo pipefail
 
-    - name: Terragrunt apply
-      uses: gruntwork-io/terragrunt-action@v2
-      with:
-        tg_version: latest
-        tg_dir: environments/github/repos/BasicRepository
-        tg_command: apply
-        tg_add_approve: 1
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REQUEST_CHECKSUM_CALCULATION: ${{ secrets.AWS_REQUEST_CHECKSUM_CALCULATION }}
-        AWS_RESPONSE_CHECKSUM_VALIDATION: ${{ secrets.AWS_RESPONSE_CHECKSUM_VALIDATION }}
+          ## Get latest version string from Github
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq -r .tag_name)
+          
+          echo "Installing Terragrunt ${LATEST_VERSION}"
+          curl -sL "https://github.com/gruntwork-io/terragrunt/releases/download/${LATEST_VERSION}/terragrunt_linux_amd64" -o /usr/local/bin/terragrunt
+          
+          chmod +x /usr/local/bin/terragrunt
+          
+          terragrunt -v
+      
+      - name: Set Terragrunt environment variables
+        run: |
+          echo "TF_VAR_repository_name=\"${{ github.event.inputs.repo-name }}\"" >> $GITHUB_ENV
+          echo "TF_VAR_repository_description=\"${{ github.event.inputs.repo-description }}\"" >> $GITHUB_ENV
+          echo "TF_VAR_repository_auto_init=${{ github.event.inputs.auto-init }}" >> $GITHUB_ENV
+          echo "TF_VAR_additional_branches='${{ github.event.inputs.additional-branches }}'" >> $GITHUB_ENV
+          echo "TF_VAR_github_owner=${{ github.event.inputs.github-owner }}" >> $GITHUB_ENV
+          echo "TF_VAR_github_token=${{ secrets.GITHUB_PAT }}" >> $GITHUB_ENV
+          echo "TF_VAR_visibility=${{ github.event.inputs.visibility }}" >> $GITHUB_ENV
 
-        TF_VAR_repository_name: ${{ secrets.REPOSITORY_NAME }}
-        TF_VAR_repository_auto_init: ${{ secrets.REPOSITORY_AUTO_INIT }}
-        TF_VAR_additional_branches: ${{ secrets.ADDITIONAL_BRANCHES }}
-        TF_VAR_github_owner: ${{ secrets.GITHUB_OWNER }}
-        TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Plan Terragrunt deployment
+        working-directory: ./environments/github/repos/BasicRepository
+        run: terragrunt plan
+
+      - name: Await manual approval before apply
+        ## Requires environment protection rules manual approval
+        if: github.event.inputs.destroy == 'false'
+        run: echo "Awaiting manual approval to apply deployment"
+
+      - name: Provision Github repository with Terragrunt
+        if: github.event.inputs.destroy == 'false'
+        working-directory: ./environments/github/repos/BasicRepository
+        run: terragrunt apply -auto-approve
+        
+      - name: Destroy Github repository deployed with Terragrunt
+        if: github.event.inputs.destroy == 'true'
+        working-directory: ./environments/github/repos/BasicRepository
+        run: terragrunt destroy -auto-approve
