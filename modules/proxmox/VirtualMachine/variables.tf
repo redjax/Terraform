@@ -44,11 +44,11 @@ variable "cores" {
 variable "memory" {
   description = "Memory (in MB) allocated to the VM."
   type        = number
-  default     = 256
+  default     = 512
 
   validation {
-    condition     = var.memory >= 128
-    error_message = "Memory should be at least 128 MB."
+    condition     = var.memory >= 512
+    error_message = "Memory should be at least 512 MB."
   }
 }
 
