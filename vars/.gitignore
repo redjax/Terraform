@@ -1,10 +1,13 @@
 proxmox/*
+proxmox/VMs/*
 
 cloudflare/*
 github/*
 github/repos/*
 
 !proxmox/*example*.tfvars
+!proxmox/VMs/
+!proxmox/VMs/*example*.tfvars
 
 !cloudflare/*example*.tfvars
 !cloudflare/waf.tfvars
