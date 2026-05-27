@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Default values
-S3_CREDENTIALS_FILE=".secrets/backblazeB2/b2.secrets.sh"
+S3_CREDENTIALS_FILE=".secrets/backblazeB2/b2.cgg.secrets.sh"
 TFVARS_FILE="waf.tfvars"
 SECRETS_FILE="waf.secrets.tfvars"
 AUTO_APPROVE=0
@@ -16,46 +16,46 @@ MIGRATE=0
 # Parse arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --s3-credentials-file)
-            S3_CREDENTIALS_FILE="$2"
-            shift 2
-            ;;
-        --auto-approve)
-            AUTO_APPROVE=1
-            shift
-            ;;
-        --tfvars-file)
-            TFVARS_FILE="$2"
-            shift 2
-            ;;
-        --secrets-file)
-            SECRETS_FILE="$2"
-            shift 2
-            ;;
-        --plan)
-            PLAN=1
-            shift
-            ;;
-        --validate)
-            VALIDATE=1
-            shift
-            ;;
-        --upgrade)
-            UPGRADE=1
-            shift
-            ;;
-        --init)
-            INIT=1
-            shift
-            ;;
-        --migrate)
-            MIGRATE=1
-            shift
-            ;;
-        *)
-            echo "Unknown parameter: $1"
-            exit 1
-            ;;
+    --s3-credentials-file)
+        S3_CREDENTIALS_FILE="$2"
+        shift 2
+        ;;
+    --auto-approve)
+        AUTO_APPROVE=1
+        shift
+        ;;
+    --tfvars-file)
+        TFVARS_FILE="$2"
+        shift 2
+        ;;
+    --secrets-file)
+        SECRETS_FILE="$2"
+        shift 2
+        ;;
+    --plan)
+        PLAN=1
+        shift
+        ;;
+    --validate)
+        VALIDATE=1
+        shift
+        ;;
+    --upgrade)
+        UPGRADE=1
+        shift
+        ;;
+    --init)
+        INIT=1
+        shift
+        ;;
+    --migrate)
+        MIGRATE=1
+        shift
+        ;;
+    *)
+        echo "Unknown parameter: $1"
+        exit 1
+        ;;
     esac
 done
 
@@ -100,9 +100,14 @@ VARS_ROOT="vars"
 SECRETS_ROOT=".secrets"
 
 MODULE_PATH="$MODULES_ROOT/cloudflare/WafZoneCustomRules"
-ENVIRONMENT_PATH="$ENVIRONMENTS_ROOT/cloudflare"
-VARS_PATH="$VARS_ROOT/cloudflare/$TFVARS_FILE"
-SECRETS_PATH="$SECRETS_ROOT/cloudflare/$SECRETS_FILE"
+ENVIRONMENT_PATH="$ENVIRONMENTS_ROOT/cloudflare_cgg"
+VARS_PATH="$VARS_ROOT/cloudflare/cgg/$TFVARS_FILE"
+SECRETS_PATH="$SECRETS_ROOT/cloudflare/cgg/$SECRETS_FILE"
+
+echo "[DEBUG] Module path: ${MODULE_PATH}"
+echo "[DEBUG] Environment path: ${ENVIRONMENT_PATH}"
+echo "[DEBUG] Vars path: ${VARS_PATH}"
+echo "[DEBUG] Secrets path: ${SECRETS_PATH}"
 
 # Check if Terraform is installed
 if ! command -v terraform >/dev/null 2>&1; then
