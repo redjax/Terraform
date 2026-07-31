@@ -1,0 +1,48 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:recommended",
+        "helpers:pinGitHubActionDigests",
+        ":dependencyDashboard"
+    ],
+    "enabledManagers": [
+        "github-actions"
+    ],
+    "platformAutomerge": true,
+    "packageRules": [
+        {
+            "description": "GitHub workflow updates only",
+            "matchManagers": [
+                "github-actions"
+            ],
+            "matchFileNames": [
+                ".github/workflows/**"
+            ]
+        },
+        {
+            "description": "Automerge patch and minor updates",
+            "matchPackageNames": [
+                "*"
+            ],
+            "matchUpdateTypes": [
+                "minor",
+                "patch",
+                "pin",
+                "digest"
+            ],
+            "automerge": true,
+            "automergeType": "pr",
+            "automergeStrategy": "merge"
+        },
+        {
+            "description": "Do not automerge major updates",
+            "matchPackageNames": [
+                "*"
+            ],
+            "matchUpdateTypes": [
+                "major"
+            ],
+            "automerge": false
+        }
+    ]
+}
