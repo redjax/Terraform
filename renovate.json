@@ -1,0 +1,39 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:recommended",
+        "helpers:pinGitHubActionDigests",
+        ":dependencyDashboard"
+    ],
+    "enabledManagers": [
+        "github-actions",
+        "terraform"
+    ],
+    "platformAutomerge": true,
+    "ignorePaths": [
+        "**/.terraform/**",
+        "**/.terragrunt-cache/**",
+        "**/.secrets/**"
+    ],
+    "packageRules": [
+        {
+            "description": "Automerge non-major dependency updates",
+            "matchUpdateTypes": [
+                "patch",
+                "minor",
+                "pin",
+                "digest"
+            ],
+            "automerge": true,
+            "automergeType": "pr",
+            "automergeStrategy": "merge"
+        },
+        {
+            "description": "Require manual review for major updates",
+            "matchUpdateTypes": [
+                "major"
+            ],
+            "automerge": false
+        }
+    ]
+}

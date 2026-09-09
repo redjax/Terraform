@@ -1,0 +1,55 @@
+---
+name: Run Renovate
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  push:
+    branches:
+      - "renovate/*"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Renovate mode"
+        required: false
+        default: "lookup"
+        type: choice
+        options:
+          - extract
+          - lookup
+          - run
+      log-level:
+        description: "Renovate log level"
+        required: false
+        default: "info"
+        type: choice
+        options:
+          - info
+          - debug
+          - trace
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: write
+
+jobs:
+  renovate:
+    uses: redjax/pipelinetemplates/.github/workflows/renovate.yml@32dbacfc32195d7b3c6ff3308c99eae9bde97986 # main
+    with:
+      mode: ${{ github.event_name == 'schedule' && 'run' || inputs.mode }}
+      log-level: ${{ inputs.log-level || 'info' }}
+      repository: ${{ github.repository }}
+      config-file: renovate.json
+      ## Set to 'ignored' while testing renovate.json changes on a different base branch,
+      #  otherwise use 'optional'
+      require-config: optional
+      autodiscover: false
+      runner-image: ubuntu-latest
+      renovate-author-email: "5534031+redjax@users.noreply.github.com"
+      base-branches: "main"
+      use-base-branch-config: true
+    secrets:
+      renovate-token: ${{ secrets.RENOVATE_TOKEN }}
+      gh-api-token: ${{ secrets.GH_API_TOKEN }}
