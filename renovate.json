@@ -6,27 +6,21 @@
         ":dependencyDashboard"
     ],
     "enabledManagers": [
-        "github-actions"
+        "github-actions",
+        "terraform"
     ],
     "platformAutomerge": true,
+    "ignorePaths": [
+        "**/.terraform/**",
+        "**/.terragrunt-cache/**",
+        "**/.secrets/**"
+    ],
     "packageRules": [
         {
-            "description": "GitHub workflow updates only",
-            "matchManagers": [
-                "github-actions"
-            ],
-            "matchFileNames": [
-                ".github/workflows/**"
-            ]
-        },
-        {
-            "description": "Automerge patch and minor updates",
-            "matchPackageNames": [
-                "*"
-            ],
+            "description": "Automerge non-major dependency updates",
             "matchUpdateTypes": [
-                "minor",
                 "patch",
+                "minor",
                 "pin",
                 "digest"
             ],
@@ -35,10 +29,7 @@
             "automergeStrategy": "merge"
         },
         {
-            "description": "Do not automerge major updates",
-            "matchPackageNames": [
-                "*"
-            ],
+            "description": "Require manual review for major updates",
             "matchUpdateTypes": [
                 "major"
             ],

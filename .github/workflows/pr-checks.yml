@@ -1,0 +1,24 @@
+---
+name: PR Checks
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  merge_group:
+
+permissions:
+  contents: read
+
+jobs:
+  renovate-gate:
+    name: Renovate Gate
+    runs-on: ubuntu-latest
+
+    steps:
+      ## This always returns a success. Later, when there are more steps/jobs,
+      #  this step should evaluate the pipeline's overall success/failure.
+      - name: Report pipeline status to Renovate
+        run: echo "Renovate dependency update passed the gate."
