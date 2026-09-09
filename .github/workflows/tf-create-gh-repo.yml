@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: github_repo_plan
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Terragrunt Plan for destroy
         if: ${{ github.event.inputs.destroy == 'true' }}
@@ -97,7 +97,7 @@ jobs:
     needs: plan
     environment: github_repo_deployment
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Terragrunt Destroy
         if: ${{ github.event.inputs.destroy == 'true' }}
