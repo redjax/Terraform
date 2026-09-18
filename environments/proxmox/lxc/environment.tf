@@ -2,11 +2,11 @@ terraform {
   required_providers {
     proxmox = {
       source  = "Telmate/proxmox"
-      version = "3.0.1-rc8"
+      version = "3.0.1-rc9"
     }
     b2 = {
       source  = "Backblaze/b2"
-      version = "~> 0.10.0"
+      version = "~> 0.14.0"
     }
   }
 }
