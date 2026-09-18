@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "terraform-git-repo"
+    bucket = "cgg-terraform"
     key    = "cgg.terraform.tfstate"
     region = "us-west-2"
 
